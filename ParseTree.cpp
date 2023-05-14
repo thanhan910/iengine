@@ -1,0 +1,251 @@
+#include "ParseTree.h"
+#include <iostream>
+
+
+bool ParseTree::parser_is_in_scope()
+{
+    return index < tokens.size();
+}
+
+void ParseTree::move_parser_to_next_token()
+{
+    ++index;
+}
+
+bool ParseTree::current_token_is(TokenType type)
+{
+    return parser_is_in_scope() && tokens[index].type == type;
+}
+
+ParseTree::ParseTree(std::vector<Token> tokens_) :
+    tokens(tokens_),
+    index(0),
+    root_node(nullptr)
+{
+}
+
+void ParseTree::parse()
+{
+    root_node = new Node(TokenType::AND, "AND");
+
+    while (parser_is_in_scope())
+    {
+        Node* expr = parse_expression();
+
+        if (expr == nullptr)
+        {
+            std::cerr << "Unexpected token: " << tokens[index].value << std::endl;
+            exit(1);
+        }
+        
+        root_node->children.push_back(expr);
+
+        if (current_token_is(SEMICOLON))
+        {
+            move_parser_to_next_token();
+
+            if (!parser_is_in_scope())
+            {
+                break;
+            }
+        }
+
+        else if(root_node->children.size() <= 1)
+        {
+            root_node = expr;
+        }
+    }
+}
+
+Node* ParseTree::parse_expression()
+{
+    return parse_implication();
+}
+
+Node* ParseTree::parse_implication()
+{
+    Node* left = parse_biconditional();
+
+    std::vector<Node*> nodes = { left };
+
+    while (current_token_is(IMPLIES))
+    {
+        move_parser_to_next_token();
+
+        Node* right = parse_biconditional();
+
+        if (right == nullptr)
+        {
+            std::cerr << "Expected right-hand side of implication" << std::endl;
+            exit(1);
+        }
+
+        nodes.push_back(right);
+    }
+
+    if (nodes.size() > 1)
+    {
+        return new Node{ TokenType::IMPLIES, "IMPLY", nodes };
+    }
+
+    else
+    {
+        return left;
+    }
+}
+
+Node* ParseTree::parse_biconditional()
+{
+    Node* left = parse_disjunction();
+
+    std::vector<Node*> nodes = { left };
+
+    while (current_token_is(BICONDITIONAL))
+    {
+        move_parser_to_next_token();
+
+        Node* right = parse_disjunction();
+
+        if (right == nullptr)
+        {
+            std::cerr << "Expected right-hand side of biconditional" << std::endl;
+            exit(1);
+        }
+
+        nodes.push_back(right);
+    }
+    if (nodes.size() > 1)
+    {
+        return new Node{ TokenType::BICONDITIONAL, "BICONDITIONAL", nodes };
+    }
+    else
+    {
+        return left;
+    }
+}
+
+Node* ParseTree::parse_disjunction()
+{
+    Node* left = parse_conjunction();
+
+    std::vector<Node*> nodes = { left };
+
+    while (current_token_is(OR))
+    {
+        move_parser_to_next_token();
+
+        Node* right = parse_conjunction();
+
+        if (right == nullptr)
+        {
+            std::cerr << "Expected right-hand side of disjunction" << std::endl;
+            exit(1);
+        }
+        nodes.push_back(right);
+    }
+    if (nodes.size() > 1)
+    {
+        return new Node{ TokenType::OR, "OR", nodes };
+    }
+    else
+    {
+        return left;
+    }
+}
+
+Node* ParseTree::parse_conjunction()
+{
+    Node* left = parse_negation();
+
+    std::vector<Node*> nodes = { left };
+
+    while (current_token_is(AND))
+    {
+        move_parser_to_next_token();
+
+        Node* right = parse_negation();
+
+        if (right == nullptr)
+        {
+            std::cerr << "Expected right-hand side of conjunction" << std::endl;
+            exit(1);
+        }
+
+        nodes.push_back(right);
+    }
+
+    if (nodes.size() > 1)
+    {
+        return new Node{ TokenType::AND, "AND", nodes };
+    }
+
+    else
+    {
+        return left;
+    }
+}
+
+Node* ParseTree::parse_negation()
+{
+    if (current_token_is(NOT))
+    {
+        Node* node = new Node{ tokens[index] };
+
+        move_parser_to_next_token();
+
+        Node* child = parse_atom();
+
+        if (child == nullptr)
+        {
+            std::cerr << "Expected atom after negation" << std::endl;
+            exit(1);
+        }
+
+        node->children.push_back(child);
+
+        return node;
+    }
+
+    else
+    {
+        return parse_atom();
+    }
+}
+
+Node* ParseTree::parse_atom()
+{
+    if (current_token_is(LPAREN))
+    {
+        move_parser_to_next_token();
+
+        Node* node = parse_expression();
+
+        if (current_token_is(RPAREN))
+        {
+            move_parser_to_next_token();
+
+            return node;
+        }
+        else
+        {
+            std::cerr << "Expected closing parenthesis" << std::endl;
+            exit(1);
+        }
+    }
+
+    else if (current_token_is(VARIABLE))
+    {
+        Node* node = new Node{ tokens[index] };
+
+        move_parser_to_next_token();
+
+        return node;
+    }
+
+    else
+    {
+        return nullptr;
+    }
+}
+
+
