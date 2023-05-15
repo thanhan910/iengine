@@ -9,7 +9,7 @@ Node* convert_to_cnf_implication(Node* node)
     Node* left = new Node{ TokenType::NOT, { node->children[0] } };
     Node* right = node->children[1];
     Node* disj_node = new Node{ TokenType::OR, "OR", { left, right } };
-    return convert_to_cnf(disj_node);
+    return cnf(disj_node);
 }
 
 Node* convert_to_cnf_biconditional(Node* node)
@@ -22,7 +22,7 @@ Node* convert_to_cnf_biconditional(Node* node)
     Node* disj_node1 = new Node{ TokenType::OR, "OR", { left, not_right } };
     Node* disj_node2 = new Node{ TokenType::OR, "OR", { not_left, right } };
     Node* cnf_node = new Node{ TokenType::AND, "AND", { disj_node1, disj_node2 } };
-    return convert_to_cnf(cnf_node);
+    return cnf(cnf_node);
 }
 
 Node* convert_to_cnf_negation(Node* node)
@@ -38,7 +38,7 @@ Node* convert_to_cnf_negation(Node* node)
         // Double negation
         Node* cnf_node = child->children[0];
         delete node;
-        return convert_to_cnf(cnf_node);
+        return cnf(cnf_node);
     }
     else if (child->type == TokenType::AND)
     {
@@ -50,7 +50,7 @@ Node* convert_to_cnf_negation(Node* node)
             cnf_node->children.push_back(not_node);
         }
         delete node;
-        return convert_to_cnf(cnf_node);
+        return cnf(cnf_node);
     }
     else if (child->type == TokenType::OR)
     {
@@ -62,7 +62,7 @@ Node* convert_to_cnf_negation(Node* node)
             cnf_node->children.push_back(not_node);
         }
         delete node;
-        return convert_to_cnf(cnf_node);
+        return cnf(cnf_node);
     }
     else
     {
@@ -130,7 +130,7 @@ Node* convert_to_cnf_disjunction(Node* node)
 
             disj_node->children.push_back(child);
 
-            disj_node = convert_to_cnf(disj_node);
+            disj_node = cnf(disj_node);
 
             cnf_node->children.push_back(disj_node);
         }
@@ -148,7 +148,7 @@ Node* convert_to_cnf_disjunction(Node* node)
     }
 }
 
-Node* convert_to_cnf(Node* node)
+Node* cnf(Node* node)
 {
     if (node == nullptr)
     {
@@ -158,7 +158,7 @@ Node* convert_to_cnf(Node* node)
     // Recursively convert children to CNF form
     for (auto& child : node->children)
     {
-        child = convert_to_cnf(child);
+        child = cnf(child);
     }
 
     // Convert node to CNF form

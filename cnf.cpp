@@ -82,7 +82,7 @@ std::vector<std::set<std::string>> cnf(const std::string& input)
 
     parser.parse();
 
-    Node* cnf_root = convert_to_cnf(parser.root_node);
+    Node* cnf_root = cnf(parser.root_node);
 
     return convert_cnf_node_to_string_sets(cnf_root);
 }

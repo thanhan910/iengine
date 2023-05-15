@@ -1,28 +1,38 @@
-//#pragma once
-//#include <string>
-//#include <vector>
-//#include "Token.h"
-//#include "Node.h"
-//#include "Lexer.h"
-//#include "ParseTree.h"
-//
-//class Parser
-//{
-//private:
-//	
-//	Lexer lexer;
-//
-//	ParseTree parse_tree;
-//
-//	std::string input;
-//
-//
-//
-//public:
-//	Parser(std::string& input);
-//
-//	std::vector<Token> tokenize();
-//
-//	Node* create_tree();
-//};
-//
+#pragma once
+#include "Token.h"
+#include "Node.h"
+#include <string>
+#include <vector>
+#include <set>
+
+
+class Parser
+{
+private:
+
+	std::string input;
+	std::set<std::string> symbols;
+	std::vector<Token> tokens;
+	Node* root;
+
+	void tokenize();
+	void create_tree();
+	void convert_to_cnf();
+
+	bool tokenized, tree_created, converted_to_cnf;
+
+public:
+	
+	Parser(std::string& input_);
+
+	std::vector<Token> get_tokens();
+
+	std::set<std::string> get_symbols();
+	
+	Node* get_tree();
+
+	Node* get_cnf_tree();
+
+	std::vector<std::set<std::string>> get_cnf_clauses();
+};
+
