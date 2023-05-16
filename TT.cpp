@@ -1,32 +1,24 @@
 #include "TT.h"
-#include "Lexer.h"
-#include "ParseTree.h"
+#include "Parser.h"
 #include "Model.h"
-
+#include "print_node.h"
 #include <unordered_map>
 #include <set>
-#include "print_node.h"
+
 
 
 TT::TT(std::string& kb_, std::string& query_) :
 	model_count(0)
 {
-	ParseTree tree_kb(Lexer(kb_).fToken);
-	tree_kb.parse();
-    kb = tree_kb.root_node;
+    Parser parser_kb(kb_);
+    Parser parser_query(query_);
 
-	ParseTree tree_query(Lexer(query_).fToken);
-	tree_query.parse();
-	query = tree_query.root_node;
-}
+    KB = parser_kb.get_tree();
+	query = parser_query.get_tree();
 
-bool TT::check()
-{
     // Get a list of all unique symbols in the knowledge base and the query symbol
-    std::set<std::string> symbols_set_kb = get_symbols(kb);
-    std::set<std::string> symbols_set_query = get_symbols(query);
-
-    std::set<std::string> symbols_set;
+    std::set<std::string> symbols_set_kb = parser_kb.get_symbols();
+    std::set<std::string> symbols_set_query = parser_query.get_symbols();
 
     for (auto& s : symbols_set_kb)
     {
@@ -37,7 +29,11 @@ bool TT::check()
     {
         symbols_set.insert(s);
     }
+}
 
+bool TT::check()
+{
+    // Transform the set of symbols into a stack
     std::vector<std::string> symbols(symbols_set.begin(), symbols_set.end());
 
     // Create a map to store the truth values of each symbol in the knowledge base and the query symbol
@@ -50,13 +46,14 @@ bool TT::check_all(std::vector<std::string> symbols, std::unordered_map<std::str
 {
     if (symbols.empty())
     {
-        if (pl_true(model, kb) == 1)
+        if (pl_value(model, KB) == 1)
         {
-            int kb_entails_query = pl_true(model, query);
+            int kb_entails_query = pl_value(model, query);
 
             if (kb_entails_query == 1)
             {
-                ++model_count;
+                model_count++;
+                true_models.push_back(model);
                 return true;
             }
 

@@ -11,8 +11,7 @@ public:
 	std::vector<std::string> sequence;
 	bool check();
 private:
-	Node* kb;
-	std::string query;
+	std::string KB, query;
 };
 
 

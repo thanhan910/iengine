@@ -1,64 +1,64 @@
-#include "convert_to_cnf.h"
+#include "cnf.h"
 #include <iostream>
 
 
 
-Node* convert_to_cnf_implication(Node* node)
+Node* cnf_implication(Node* node)
 {
     // Convert A => B to ~A | B
-    Node* left = new Node{ TokenType::NOT, { node->children[0] } };
+    Node* left = new Node{ NOT, { node->children[0] } };
     Node* right = node->children[1];
-    Node* disj_node = new Node{ TokenType::OR, "OR", { left, right } };
+    Node* disj_node = new Node{ OR, "OR", { left, right } };
     return cnf(disj_node);
 }
 
-Node* convert_to_cnf_biconditional(Node* node)
+Node* cnf_biconditional(Node* node)
 {
     // Convert A <=> B to (A | ~B) & (~A | B)
     Node* left = node->children[0];
     Node* right = node->children[1];
-    Node* not_left = new Node{ TokenType::NOT, { left } };
-    Node* not_right = new Node{ TokenType::NOT, { right } };
-    Node* disj_node1 = new Node{ TokenType::OR, "OR", { left, not_right } };
-    Node* disj_node2 = new Node{ TokenType::OR, "OR", { not_left, right } };
-    Node* cnf_node = new Node{ TokenType::AND, "AND", { disj_node1, disj_node2 } };
+    Node* not_left = new Node{ NOT, { left } };
+    Node* not_right = new Node{ NOT, { right } };
+    Node* disj_node1 = new Node{ OR, "OR", { left, not_right } };
+    Node* disj_node2 = new Node{ OR, "OR", { not_left, right } };
+    Node* cnf_node = new Node{ AND, "AND", { disj_node1, disj_node2 } };
     return cnf(cnf_node);
 }
 
-Node* convert_to_cnf_negation(Node* node)
+Node* cnf_negation(Node* node)
 {
     Node* child = node->children[0];
-    if (child->type == TokenType::VARIABLE)
+    if (child->type == VARIABLE)
     {
         // Do nothing
         return node;
     }
-    else if (child->type == TokenType::NOT)
+    else if (child->type == NOT)
     {
         // Double negation
         Node* cnf_node = child->children[0];
         delete node;
         return cnf(cnf_node);
     }
-    else if (child->type == TokenType::AND)
+    else if (child->type == AND)
     {
         // De Morgan's law: ~(A & B) = ~A | ~B
-        Node* cnf_node = new Node{ TokenType::OR, "OR" };
+        Node* cnf_node = new Node{ OR, "OR" };
         for (auto& grandchild : child->children)
         {
-            Node* not_node = new Node{ TokenType::NOT, { grandchild } };
+            Node* not_node = new Node{ NOT, { grandchild } };
             cnf_node->children.push_back(not_node);
         }
         delete node;
         return cnf(cnf_node);
     }
-    else if (child->type == TokenType::OR)
+    else if (child->type == OR)
     {
         // De Morgan's law: ~(A | B) = ~A & ~B
-        Node* cnf_node = new Node{ TokenType::AND, "AND" };
+        Node* cnf_node = new Node{ AND, "AND" };
         for (auto& grandchild : child->children)
         {
-            Node* not_node = new Node{ TokenType::NOT, { grandchild } };
+            Node* not_node = new Node{ NOT, { grandchild } };
             cnf_node->children.push_back(not_node);
         }
         delete node;
@@ -71,13 +71,13 @@ Node* convert_to_cnf_negation(Node* node)
     }
 }
 
-Node* convert_to_cnf_conjunction(Node* node)
+Node* conjunction(Node* node)
 {
     // Flatten conjunctions: (A & B) & C = A & B & C
     std::vector<Node*> flattened;
     for (auto& child : node->children)
     {
-        if (child->type == TokenType::AND)
+        if (child->type == AND)
         {
             flattened.insert(flattened.end(), child->children.begin(), child->children.end());
             delete child;
@@ -91,7 +91,7 @@ Node* convert_to_cnf_conjunction(Node* node)
     return node;
 }
 
-Node* convert_to_cnf_disjunction(Node* node)
+Node* cnf_disjunction(Node* node)
 {
     // Flatten disjunctions
     std::vector<Node*> flattened;
@@ -101,12 +101,12 @@ Node* convert_to_cnf_disjunction(Node* node)
 
     for (auto& child : node->children)
     {
-        if (child->type == TokenType::OR)
+        if (child->type == OR)
         {
             flattened.insert(flattened.end(), child->children.begin(), child->children.end());
             delete child;
         }
-        else if (child->type == TokenType::AND && conjunction_node == nullptr)
+        else if (child->type == AND && conjunction_node == nullptr)
         {
             conjunction_node = child;
         }
@@ -164,23 +164,23 @@ Node* cnf(Node* node)
     // Convert node to CNF form
     switch (node->type)
     {
-    case TokenType::IMPLIES: {
-        return convert_to_cnf_implication(node);
+    case IMPLIES: {
+        return cnf_implication(node);
     }
-    case TokenType::BICONDITIONAL: {
-        return convert_to_cnf_biconditional(node);
+    case BICONDITIONAL: {
+        return cnf_biconditional(node);
     }
-    case TokenType::NOT: {
-        return convert_to_cnf_negation(node);
+    case NOT: {
+        return cnf_negation(node);
     }
-    case TokenType::AND: {
-        return convert_to_cnf_conjunction(node);
+    case AND: {
+        return conjunction(node);
     }
-    case TokenType::OR: {
-        return convert_to_cnf_disjunction(node);
+    case OR: {
+        return cnf_disjunction(node);
     }
 
-    case TokenType::VARIABLE:
+    case VARIABLE:
 
     default: {
         // Do nothing

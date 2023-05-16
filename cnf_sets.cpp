@@ -1,8 +1,4 @@
 #include "cnf.h"
-#include "convert_to_cnf.h"
-#include "Node.h"
-#include "ParseTree.h"
-#include "Lexer.h"
 
 std::string convert_literal_node_to_string(Node* literal_node)
 {
@@ -74,16 +70,5 @@ std::vector<std::set<std::string>> convert_cnf_node_to_string_sets(Node* cnf_nod
 
 
 
-std::vector<std::set<std::string>> cnf(const std::string& input)
-{
-    std::vector<Token> tokens = Lexer(input).fToken;
 
-    ParseTree parser(tokens);
-
-    parser.parse();
-
-    Node* cnf_root = cnf(parser.root_node);
-
-    return convert_cnf_node_to_string_sets(cnf_root);
-}
 

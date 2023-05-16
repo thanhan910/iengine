@@ -2,13 +2,37 @@
 
 #include "Node.h"
 #include "Model.h"
-#include "ParseTree.h"
-#include "Lexer.h"
+#include "Parser.h"
 
 #include <unordered_map>
 #include <queue>
 #include <iostream>
 #include <set>
+
+std::set<std::string> get_symbols(Node* node)
+{
+    std::set<std::string> sequence;
+
+    if (node->type == VARIABLE)
+    {
+        sequence.insert(node->value);
+
+        return sequence;
+    }
+
+    for (Node* child : node->children)
+    {
+        std::set<std::string> child_symbols = get_symbols(child);
+
+        for (const std::string symbol : child_symbols)
+        {
+            sequence.insert(symbol);
+        }
+    }
+
+    return sequence;
+}
+
 
 std::set<std::string> GetAntecedents(Node* horn_node)
 {
@@ -51,9 +75,8 @@ std::string GetConsequent(Node* horn_node)
 BC::BC(std::string& kb_, std::string& query_) :
     query(query_)
 {
-    ParseTree tree_kb(Lexer(kb_).fToken);
-    tree_kb.parse();
-    kb = tree_kb.root_node;
+    Parser parser(kb_);
+    KB = parser.get_tree();
 }
 
 bool BC::check()
@@ -71,7 +94,7 @@ bool BC::ask(const std::string& query)
     }
 
     // Try to prove the query using backward chaining
-    for (const auto& clause : kb->children)
+    for (const auto& clause : KB->children)
     {
         // Check if the consequent of the Horn clause matches the query
         if (GetConsequent(clause) == query)

@@ -14,7 +14,7 @@ public:
 	
 	bool check();
 private:
-	Node* kb;
+	Node* KB;
 	std::string query;
 	std::unordered_map<std::string, bool> facts;
 	bool ask(const std::string& query);

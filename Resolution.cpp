@@ -2,7 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <set>
-#include "cnf.h"
+#include "Parser.h"
 #include "literal_symbols.h"
 
 using namespace std;
@@ -89,7 +89,11 @@ set<set<string>> resolve(const set<string>& c1, const set<string>& c2)
 // Prove a theorem using resolution
 bool resolution_prove(const string& KB, const string& query)
 {
-    vector<set<string>> cnf_clauses = cnf(KB + "~(" + query + ");");
+    string sentence = KB + "~(" + query + ");";
+    
+    Parser parser(sentence);
+
+    vector<set<string>> cnf_clauses = parser.get_cnf_clauses();
 
     set<set<string>> clauses(cnf_clauses.begin(), cnf_clauses.end());
 

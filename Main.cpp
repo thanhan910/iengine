@@ -6,8 +6,7 @@
 #include "DPLL.h"
 #include "Resolution.h"
 
-#include "Lexer.h"
-#include "ParseTree.h"
+#include "Parser.h"
 #include "print_node.h"
 
 using namespace std;
@@ -20,7 +19,7 @@ void print_nodes_creations()
     std::cout << "Nodes remaining: " << Node::instance_created - Node::instance_deleted << std::endl;
 }
 
-void test(string& input, string& query)
+void test_parser(string& input, string& query)
 {
     cout << "INPUT:\n";
 
@@ -29,17 +28,18 @@ void test(string& input, string& query)
     cout << endl;
 
     cout << "TREE KB:\n\n";
-    ParseTree tree(Lexer(input).fToken);
-    tree.parse();
-    print_node(tree.root_node);
+    Parser parser(input);
+    print_node(parser.get_tree());
     cout << endl;
 
     cout << "QUERY TREE :\n\n";
-    ParseTree treeq(Lexer(query).fToken);
-    treeq.parse();
-    print_node(treeq.root_node);
+    Parser parser_q(query);
+    print_node(parser_q.get_tree());
     cout << endl;
+}
 
+void test_horn(string& input, string& query)
+{
     // Test inference engines
     bool result;
 
@@ -118,25 +118,10 @@ void test(string& input, string& query)
 
 void test_general(string& input, string& query)
 {
-    cout << "INPUT:\n";
-
-    cout << input << endl;
-    cout << query << endl;
-    cout << endl;
-
-    cout << "TREE KB:\n\n";
-    ParseTree tree(Lexer(input).fToken);
-    tree.parse();
-    print_node(tree.root_node);
-    cout << endl;
-
-    cout << "QUERY TREE :\n\n";
-    ParseTree treeq(Lexer(query).fToken);
-    treeq.parse();
-    print_node(treeq.root_node);
-    cout << endl;
+    
 
     // Test inference engines
+
     bool result;
 
     // TEST TT
@@ -179,9 +164,11 @@ int main()
     string input, query;
     input = "p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;";
     query = "d";
-
-    test(input, query);
+    test_horn(input, query);
     
+    query = "a";
+    test_horn(input, query);
+
 
     input = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
     query = "d";

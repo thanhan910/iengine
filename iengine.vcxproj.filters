@@ -19,29 +19,35 @@
     <Filter Include="Source Files\Token">
       <UniqueIdentifier>{af5bd93b-7ead-4258-80b2-ad3be1db7ab6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\ParseTree">
-      <UniqueIdentifier>{21881858-2a90-4178-a852-3efdc73f03ff}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Node">
       <UniqueIdentifier>{6cd9cb7a-9507-4dba-ac4f-4afa61974361}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\ParseTree">
-      <UniqueIdentifier>{a39f5d42-4487-43f1-b904-8e27c09503e9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Node">
       <UniqueIdentifier>{2f9bc35f-296b-4f70-a16b-030cf7108161}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\CNF">
-      <UniqueIdentifier>{cc5c78b5-82e7-41ac-9100-123ef8a0cc1e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\CNF">
-      <UniqueIdentifier>{a07e8437-3a62-48d0-8c12-2162a84a2190}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\methods">
       <UniqueIdentifier>{8289df58-aec7-4432-89b3-93d9f1e86f49}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\methods">
       <UniqueIdentifier>{dbe0a40d-2926-46a5-b9d2-6a4987c86a5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parser">
+      <UniqueIdentifier>{21881858-2a90-4178-a852-3efdc73f03ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parser">
+      <UniqueIdentifier>{a39f5d42-4487-43f1-b904-8e27c09503e9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parser\CNF">
+      <UniqueIdentifier>{a07e8437-3a62-48d0-8c12-2162a84a2190}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parser\CNF">
+      <UniqueIdentifier>{cc5c78b5-82e7-41ac-9100-123ef8a0cc1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Parser\ParseTree">
+      <UniqueIdentifier>{a561e6ba-f26c-4c9c-915c-c1985d78e836}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Parser\ParseTree">
+      <UniqueIdentifier>{3c6a56e3-a50d-4944-8ac5-b51df1a8ec4c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -51,26 +57,17 @@
     <ClCompile Include="KEYWORDS.cpp">
       <Filter>Source Files\Token</Filter>
     </ClCompile>
-    <ClCompile Include="Lexer.cpp">
-      <Filter>Source Files\Token</Filter>
-    </ClCompile>
     <ClCompile Include="Node.cpp">
       <Filter>Source Files\Node</Filter>
     </ClCompile>
-    <ClCompile Include="ParseTree.cpp">
-      <Filter>Source Files\ParseTree</Filter>
+    <ClCompile Include="cnf_sets.cpp">
+      <Filter>Source Files\Parser\CNF</Filter>
     </ClCompile>
-    <ClCompile Include="cnf.cpp">
-      <Filter>Source Files\CNF</Filter>
-    </ClCompile>
-    <ClCompile Include="convert_to_cnf.cpp">
-      <Filter>Source Files\CNF</Filter>
+    <ClCompile Include="cnf_node.cpp">
+      <Filter>Source Files\Parser\CNF</Filter>
     </ClCompile>
     <ClCompile Include="print_node.cpp">
       <Filter>Source Files\Node</Filter>
-    </ClCompile>
-    <ClCompile Include="Parser.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Source Files</Filter>
@@ -93,6 +90,12 @@
     <ClCompile Include="literal_symbols.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Parser.cpp">
+      <Filter>Source Files\Parser</Filter>
+    </ClCompile>
+    <ClCompile Include="ParseTree.cpp">
+      <Filter>Source Files\Parser\ParseTree</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TokenType.h">
@@ -104,26 +107,14 @@
     <ClInclude Include="Token.h">
       <Filter>Header Files\Token</Filter>
     </ClInclude>
-    <ClInclude Include="Lexer.h">
-      <Filter>Header Files\Token</Filter>
-    </ClInclude>
     <ClInclude Include="Node.h">
       <Filter>Header Files\Node</Filter>
     </ClInclude>
-    <ClInclude Include="ParseTree.h">
-      <Filter>Header Files\ParseTree</Filter>
-    </ClInclude>
     <ClInclude Include="cnf.h">
-      <Filter>Header Files\CNF</Filter>
-    </ClInclude>
-    <ClInclude Include="convert_to_cnf.h">
-      <Filter>Header Files\CNF</Filter>
+      <Filter>Header Files\Parser\CNF</Filter>
     </ClInclude>
     <ClInclude Include="print_node.h">
       <Filter>Header Files\Node</Filter>
-    </ClInclude>
-    <ClInclude Include="Parser.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>Header Files</Filter>
@@ -145,6 +136,12 @@
     </ClInclude>
     <ClInclude Include="Resolution.h">
       <Filter>Header Files\methods</Filter>
+    </ClInclude>
+    <ClInclude Include="Parser.h">
+      <Filter>Header Files\Parser</Filter>
+    </ClInclude>
+    <ClInclude Include="ParseTree.h">
+      <Filter>Header Files\Parser\ParseTree</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

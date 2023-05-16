@@ -128,12 +128,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BC.cpp" />
-    <ClCompile Include="cnf.cpp" />
-    <ClCompile Include="convert_to_cnf.cpp" />
+    <ClCompile Include="cnf_sets.cpp" />
+    <ClCompile Include="cnf_node.cpp" />
     <ClCompile Include="DPLL.cpp" />
     <ClCompile Include="FC.cpp" />
     <ClCompile Include="KEYWORDS.cpp" />
-    <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="literal_symbols.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Model.cpp" />
@@ -147,11 +146,9 @@
   <ItemGroup>
     <ClInclude Include="BC.h" />
     <ClInclude Include="cnf.h" />
-    <ClInclude Include="convert_to_cnf.h" />
     <ClInclude Include="DPLL.h" />
     <ClInclude Include="FC.h" />
     <ClInclude Include="KEYWORDS.h" />
-    <ClInclude Include="Lexer.h" />
     <ClInclude Include="literal_symbols.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="Node.h" />

@@ -1,11 +1,10 @@
 #include "DPLL.h"
-#include "DPLL.h"
+#include "Parser.h"
 #include <iostream>
 #include <vector>
 #include <unordered_map>
 #include <set>
 #include <string>
-#include "cnf.h"
 #include "literal_symbols.h"
 
 using namespace std;
@@ -14,21 +13,21 @@ using namespace std;
 
 
 
-// Function to get symbols from clauses
-set<string> get_symbols(vector<set<string>>& cnf_clauses)
-{
-    set<string> result;
-
-    for (const auto& clause : cnf_clauses)
-    {
-        for (const auto& lit : clause)
-        {
-            result.insert(atom(lit));
-        }
-    }
-
-    return result;
-}
+//// Function to get symbols from clauses
+//set<string> get_symbols(vector<set<string>>& cnf_clauses)
+//{
+//    set<string> result;
+//
+//    for (const auto& clause : cnf_clauses)
+//    {
+//        for (const auto& lit : clause)
+//        {
+//            result.insert(atom(lit));
+//        }
+//    }
+//
+//    return result;
+//}
 
 
 // Function to find a pure symbol in the given set of symbols and clauses
@@ -190,9 +189,11 @@ bool dpll(vector<set<string>> clauses, set<string> symbols, unordered_map<string
 // Wrapper function to call the DPLL algorithm
 bool dpll_satisfiable(string& sentence)
 {
-    vector<set<string>> clauses = cnf(sentence);
+    Parser parser(sentence);
 
-    set<string> symbols = get_symbols(clauses);
+    vector<set<string>> clauses = parser.get_cnf_clauses();
+
+    set<string> symbols = parser.get_symbols();
 
     unordered_map<string, bool> model;
 

@@ -4,16 +4,12 @@
 #include <queue>
 #include <iostream>
 #include "Model.h"
-#include "ParseTree.h"
-#include "Lexer.h"
+#include "Parser.h"
 
 FC::FC(std::string& kb_, std::string& query_) :
+    KB(kb_),
     query(query_)
-{
-    ParseTree tree_kb(Lexer(kb_).fToken);
-    tree_kb.parse();
-    kb = tree_kb.root_node;
-}
+{ }
 
 bool is_in_premise(Node* horn_clause, std::string& symbol)
 {
@@ -47,10 +43,16 @@ bool is_in_premise(Node* horn_clause, std::string& symbol)
 
 bool FC::check()
 {
-    std::set<std::string> symbols = get_symbols(kb);
+    Parser parser_kb(KB);
+
+    std::set<std::string> symbols = parser_kb.get_symbols();
+
+    std::vector<Node*> clauses = parser_kb.get_tree()->children;
 
     std::unordered_map<std::string, bool> inferred;
+
     std::queue<std::string> agenda;
+    
     std::unordered_map<Node*, size_t> count;
 
     // Initialize inferred symbols to false
@@ -60,7 +62,9 @@ bool FC::check()
         inferred[symbol] = false;
     }
 
-    for (Node* clause : kb->children)
+    // Initialize agenda and count
+
+    for (Node* clause : clauses)
     {
         if (clause->type == IMPLIES)
         {
@@ -82,6 +86,8 @@ bool FC::check()
             agenda.push(clause->value);
         }
     }
+
+    // Perform Forward Chaining
 
     while (!agenda.empty())
     {
@@ -106,7 +112,7 @@ bool FC::check()
         inferred[symbol] = true;
 
         
-        for (Node* clause : kb->children)
+        for (Node* clause : clauses)
         { 
             // for each Horn clause c in whose premise p appears do
 
