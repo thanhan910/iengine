@@ -6,7 +6,6 @@
 #include <set>
 
 
-
 TT::TT(std::string& kb_, std::string& query_) :
 	model_count(0)
 {
@@ -34,7 +33,7 @@ TT::TT(std::string& kb_, std::string& query_) :
 bool TT::check()
 {
     // Transform the set of symbols into a stack
-    std::vector<std::string> symbols(symbols_set.begin(), symbols_set.end());
+    std::vector<std::string> symbols(symbols_set.rbegin(), symbols_set.rend());
 
     // Create a map to store the truth values of each symbol in the knowledge base and the query symbol
     std::unordered_map<std::string, bool> model;
@@ -46,14 +45,14 @@ bool TT::check_all(std::vector<std::string> symbols, std::unordered_map<std::str
 {
     if (symbols.empty())
     {
-        if (pl_value(model, KB) == 1)
-        {
-            int kb_entails_query = pl_value(model, query);
+        int pl_kb = pl_value(model, KB);
+        int pl_query = pl_value(model, query);
 
-            if (kb_entails_query == 1)
+        if (pl_kb == 1)
+        {
+            if (pl_query == 1)
             {
                 model_count++;
-                true_models.push_back(model);
                 return true;
             }
 
@@ -63,7 +62,7 @@ bool TT::check_all(std::vector<std::string> symbols, std::unordered_map<std::str
             }
         }
 
-        else
+        else if (pl_kb == 0)
         {
             return true;
         }
@@ -74,11 +73,13 @@ bool TT::check_all(std::vector<std::string> symbols, std::unordered_map<std::str
         std::string p = symbols.back();
         symbols.pop_back();
 
-        std::unordered_map<std::string, bool> model_true = model;
-        std::unordered_map<std::string, bool> model_false = model;
-        model_true[p] = true;
-        model_false[p] = false;
-        return check_all(symbols, model_true) && check_all(symbols, model_false);
+        model[p] = true;
+        if (!check_all(symbols, model)) return false;
+
+        model[p] = false;
+        if (!check_all(symbols, model)) return false;
+
+        return true;
     }
 }
 

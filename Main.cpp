@@ -38,18 +38,13 @@ void test_parser(string& input, string& query)
     cout << endl;
 }
 
-void test_horn(string& input, string& query)
+void tt(string& input, string& query)
 {
-    // Test inference engines
-    bool result;
-
     // TEST TT
 
     TT ie_tt = TT(input, query);
 
-    result = ie_tt.check();
-
-    if (result)
+    if (ie_tt.check())
     {
         cout << "YES: " << ie_tt.model_count << endl;
     }
@@ -58,14 +53,15 @@ void test_horn(string& input, string& query)
     {
         cout << "NO\n";
     }
+}
 
+void fc(string& input, string& query)
+{
     // TEST FC
 
     FC ie_fc = FC(input, query);
 
-    result = ie_fc.check();
-
-    if (result)
+    if (ie_fc.check())
     {
         cout << "YES:";
 
@@ -81,19 +77,19 @@ void test_horn(string& input, string& query)
 
         cout << endl;
     }
-
     else
     {
         cout << "NO\n";
     }
+}
 
+void bc(string& input, string& query)
+{
     // TEST BC
 
     BC ie_bc = BC(input, query);
 
-    result = ie_bc.check();
-
-    if (result)
+    if (ie_bc.check())
     {
         cout << "YES:";
 
@@ -116,41 +112,35 @@ void test_horn(string& input, string& query)
     }
 }
 
+void dpll(string& input, string& query)
+{
+    cout << (dpll_prove(input, query) ? "YES" : "NO") << endl;
+}
+
+void res(string& input, string& query)
+{
+    cout << (resolution_prove(input, query) ? "YES" : "NO") << endl;
+}
+
+void test_horn(string& input, string& query)
+{
+    tt(input, query);
+
+    fc(input, query);
+
+    bc(input, query);
+
+
+}
+
 void test_general(string& input, string& query)
 {
-    
 
-    // Test inference engines
+    tt(input, query);
 
-    bool result;
+    dpll(input, query);
 
-    // TEST TT
-
-    TT ie_tt = TT(input, query);
-
-    result = ie_tt.check();
-
-    if (result)
-    {
-        cout << "YES: " << ie_tt.model_count << endl;
-    }
-
-    else
-    {
-        cout << "NO\n";
-    }
-
-    // TEST DPLL
-
-    result = dpll_prove(input, query);
-
-    cout << (result ? "YES" : "NO") << endl;
-
-    // TEST RESOLUTION
-
-    result = resolution_prove(input, query);
-
-    cout << (result ? "YES" : "NO") << endl;
+    res(input, query);
     
 }
 
@@ -163,8 +153,8 @@ int main()
     // Read input from standard input
     string input, query;
     input = "p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;";
-    query = "d";
-    test_horn(input, query);
+    //query = "d";
+    //test_horn(input, query);
     
     query = "a";
     test_horn(input, query);
