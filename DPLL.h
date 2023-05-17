@@ -7,6 +7,7 @@ typedef std::set<std::string> Clause;
 
 class DPLL
 {
+private:
 	bool result;
 	bool dpll(std::vector<Clause> clauses, std::set<std::string> symbols, Model model);
 public:
