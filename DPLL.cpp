@@ -1,13 +1,11 @@
 #include "DPLL.h"
 #include "Parser.h"
 #include "Literal.h"
-#include "Model.h"
 
 #include <iostream>
 #include <vector>
 #include <unordered_map>
 #include <set>
-#include <string>
 
 using namespace std;
 
@@ -24,7 +22,7 @@ DPLL::DPLL(std::string& KB_, std::string& query_) :
 
     Model model;
 
-    kb_entails_query = !satisfiable(clauses, symbols, model);
+    kb_entails_query = !dpll(clauses, symbols, model);
 }
 
 void DPLL::print_result()
@@ -41,7 +39,7 @@ void DPLL::print_result()
 }
 
 // Main DPLL algorithm function
-bool DPLL::satisfiable(std::vector<Clause> clauses, std::set<std::string> symbols, Model model)
+bool DPLL::dpll(std::vector<Clause> clauses, std::set<std::string> symbols, Model model)
 {
     // Simultaneously perform unit propagation, pure literal elimination, and check the pl value of the sentence
     bool all_clauses_true = true; // If there is one false or indeterminate clause, then not all clauses are true
@@ -87,7 +85,7 @@ bool DPLL::satisfiable(std::vector<Clause> clauses, std::set<std::string> symbol
 
                 unassigned_symbol = symbol; unassigned_value = value;
 
-                if (is_pure.find(symbol) != is_pure.end())
+                if (symbol_value.count(symbol) && symbol_value[symbol] != value)
                 {
                     is_pure[symbol] = false;
                 }
@@ -108,7 +106,7 @@ bool DPLL::satisfiable(std::vector<Clause> clauses, std::set<std::string> symbol
                 // Unit literal found
                 symbols.erase(unassigned_symbol);
                 model[unassigned_symbol] = unassigned_value;
-                return satisfiable(clauses, symbols, model);
+                return dpll(clauses, symbols, model);
             }
         }
 
@@ -139,7 +137,7 @@ bool DPLL::satisfiable(std::vector<Clause> clauses, std::set<std::string> symbol
     }
     if (pure_symbol_exist)
     {
-        return satisfiable(clauses, symbols, model);
+        return dpll(clauses, symbols, model);
     }
 
     // If all symbols are assigned values, return false
@@ -152,10 +150,10 @@ bool DPLL::satisfiable(std::vector<Clause> clauses, std::set<std::string> symbol
     symbols.erase(next_symbol);
 
     model[next_symbol] = true;
-    if (satisfiable(clauses, symbols, model)) return true;
+    if (dpll(clauses, symbols, model)) return true;
 
     model[next_symbol] = false;
-    if (satisfiable(clauses, symbols, model)) return true;
+    if (dpll(clauses, symbols, model)) return true;
 
     return false;
 }
