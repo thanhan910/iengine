@@ -146,6 +146,7 @@ void test_general(string& input, string& query)
 
 
 
+#include "Model.h"
 // Example usage
 int main()
 {
@@ -156,14 +157,14 @@ int main()
 
 
     //input = "p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;";
-    ////query = "d";
-    ////test_horn(input, query);
-    //
-    //query = "a";
+    //query = "d";
     //test_horn(input, query);
+    ////
+    ////query = "a";
+    ////test_horn(input, query);
 
 
-    input = "(a <=> (c => ~d)) & b & b => a; c; ~f || g;";
+    input = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
     
     //query = "d";
     //test_general(input, query);
@@ -178,8 +179,10 @@ int main()
     //query = "f";
     //test_general(input, query);
     
-    query = "b || ~b";
+    query = "a";
     test_general(input, query);
+
+    cout << Model::instanceCreated << " " << Model::instanceDeleted;
     
     return 0;
 }

@@ -8,7 +8,7 @@ enum TokenType
     AND,
     OR,
     NOT,
-    VARIABLE,
+    SYMBOL,
     SEMICOLON,
     BOOLEAN
 };

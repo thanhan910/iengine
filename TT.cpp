@@ -36,12 +36,12 @@ bool TT::check()
     std::vector<std::string> symbols(symbols_set.rbegin(), symbols_set.rend());
 
     // Create a map to store the truth values of each symbol in the knowledge base and the query symbol
-    std::unordered_map<std::string, bool> model;
+    Model model;
 
     return check_all(symbols, model);
 }
 
-bool TT::check_all(std::vector<std::string> symbols, std::unordered_map<std::string, bool> model)
+bool TT::check_all(std::vector<std::string> symbols, Model model)
 {
     if (symbols.empty())
     {

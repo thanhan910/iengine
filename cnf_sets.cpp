@@ -15,7 +15,7 @@ std::string convert_literal_node_to_string(Node* literal_node)
 
 std::set<std::string> convert_clause_node_to_string_sets(Node* clause_node)
 {
-    if (clause_node->type == NOT || clause_node->type == VARIABLE)
+    if (clause_node->type == NOT || clause_node->type == SYMBOL)
     {
         std::string l = convert_literal_node_to_string(clause_node);
 
@@ -39,7 +39,7 @@ std::set<std::string> convert_clause_node_to_string_sets(Node* clause_node)
 
 std::vector<std::set<std::string>> convert_cnf_node_to_string_sets(Node* cnf_node)
 {
-    if (cnf_node->type == NOT || cnf_node->type == VARIABLE)
+    if (cnf_node->type == NOT || cnf_node->type == SYMBOL)
     {
         std::string l = convert_literal_node_to_string(cnf_node);
 

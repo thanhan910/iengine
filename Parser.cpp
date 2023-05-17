@@ -66,7 +66,7 @@ void Parser::tokenize()
                 end++;
             }
             std::string var = input.substr(pos, end - pos);
-            tokens.emplace_back(VARIABLE, var);
+            tokens.emplace_back(SYMBOL, var);
             symbols.insert(var);
             pos = end;
 

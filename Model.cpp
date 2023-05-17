@@ -11,15 +11,23 @@ void print_model(std::unordered_map<std::string, bool>& model)
     }
 }
 
+size_t Model::instanceCreated = 0;
+size_t Model::instanceDeleted = 0;
 
-int pl_value(std::unordered_map<std::string, bool>& model, Node* node)
+
+int pl_value(Model& model, Node* node)
 {
+    if (node == nullptr)
+    {
+        return 2;
+    }
+
     switch (node->type)
     {
     case BOOLEAN: {
         return node->value == "1" ? 1 : 0;
     }
-    case VARIABLE: {
+    case SYMBOL: {
 
         if (model.find(node->value) == model.end())
         {
@@ -90,22 +98,22 @@ int pl_value(std::unordered_map<std::string, bool>& model, Node* node)
     }
 
     case IMPLIES: {
-        int ant = pl_value(model, node->children[0]);
-        int con = pl_value(model, node->children[1]);
+        int left = pl_value(model, node->children[0]);
+        int right = pl_value(model, node->children[1]);
 
-        if (ant == 0 || con == 1) return 1;
-        if (ant == 0 && con == 1) return 0;
+        if (left == 0 || right == 1) return 1;
+        if (left == 0 && right == 1) return 0;
         return 2;
 
     }
 
     case BICONDITIONAL: {
-        int ant = pl_value(model, node->children[0]);
-        int con = pl_value(model, node->children[1]);
+        int left = pl_value(model, node->children[0]);
+        int right = pl_value(model, node->children[1]);
 
-        if (ant == 2 || con == 2) return 2;
-        if (ant == con) return 1;
-        if (ant != con) return 0;
+        if (left == 2 || right == 2) return 2;
+        if (left == right) return 1;
+        if (left != right) return 0;
     }
 
     default: {

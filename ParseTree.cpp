@@ -233,7 +233,7 @@ Node* ParseTree::parse_atom()
         }
     }
 
-    else if (current_token_is(VARIABLE))
+    else if (current_token_is(SYMBOL))
     {
         Node* node = new Node{ tokens[index] };
 

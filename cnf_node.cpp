@@ -28,7 +28,7 @@ Node* cnf_biconditional(Node* node)
 Node* cnf_negation(Node* node)
 {
     Node* child = node->children[0];
-    if (child->type == VARIABLE)
+    if (child->type == SYMBOL)
     {
         // Do nothing
         return node;
@@ -180,7 +180,7 @@ Node* cnf(Node* node)
         return cnf_disjunction(node);
     }
 
-    case VARIABLE:
+    case SYMBOL:
 
     default: {
         // Do nothing

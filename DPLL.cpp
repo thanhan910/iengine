@@ -6,63 +6,16 @@
 #include <set>
 #include <string>
 #include "literal_symbols.h"
+#include "Model.h"
 
 using namespace std;
 
 
-
-
-
-//// Function to get symbols from clauses
-//set<string> get_symbols(vector<set<string>>& cnf_clauses)
-//{
-//    set<string> result;
-//
-//    for (const auto& clause : cnf_clauses)
-//    {
-//        for (const auto& lit : clause)
-//        {
-//            result.insert(atom(lit));
-//        }
-//    }
-//
-//    return result;
-//}
-
-
-// Function to find a pure symbol in the given set of symbols and clauses
-pair<string, bool> find_pure_symbol(set<string>& symbols, vector<set<string>>& clauses, unordered_map<string, bool>& model)
-{
-    for (auto& symbol : symbols)
-    {
-        bool found_positive = false, found_negative = false;
-        for (auto& clause : clauses)
-        {
-            if (clause.find(symbol) != clause.end())
-            {
-                found_positive = true;
-            }
-            if (clause.find("~" + symbol) != clause.end())
-            {
-                found_negative = true;
-            }
-        }
-        if (found_positive && !found_negative)
-        {
-            return make_pair(symbol, true);
-        }
-        if (!found_positive && found_negative)
-        {
-            return make_pair(symbol, false);
-        }
-    }
-    return make_pair("", false);
-}
-
+typedef set<string> Clause;
 
 
 // Main DPLL algorithm function
-bool dpll(vector<set<string>> clauses, set<string> symbols, unordered_map<string, bool> model)
+bool dpll(vector<Clause> clauses, set<string> symbols, Model model)
 {
     bool all_clauses_true = true;
 
@@ -70,7 +23,7 @@ bool dpll(vector<set<string>> clauses, set<string> symbols, unordered_map<string
 
     unordered_map<string, bool> symbol_value;
 
-    for (auto& clause : clauses)
+    for (Clause& clause : clauses)
     {
         bool clause_true = false;
 
@@ -177,13 +130,13 @@ bool dpll(vector<set<string>> clauses, set<string> symbols, unordered_map<string
     string next_symbol = *(symbols.begin());
     symbols.erase(next_symbol);
 
-    unordered_map<string, bool> model_true = model;
-    model_true[next_symbol] = true;
+    model[next_symbol] = true;
+    if (dpll(clauses, symbols, model)) return true;
 
-    unordered_map<string, bool> model_false = model;
-    model_false[next_symbol] = false;
+    model[next_symbol] = false;
+    if (dpll(clauses, symbols, model)) return true;
 
-    return dpll(clauses, symbols, model_true) || dpll(clauses, symbols, model_false);
+    return false;
 }
 
 // Wrapper function to call the DPLL algorithm
@@ -191,11 +144,11 @@ bool dpll_satisfiable(string& sentence)
 {
     Parser parser(sentence);
 
-    vector<set<string>> clauses = parser.get_cnf_clauses();
+    vector<Clause> clauses = parser.get_cnf_clauses();
 
     set<string> symbols = parser.get_symbols();
 
-    unordered_map<string, bool> model;
+    Model model;
 
     return dpll(clauses, symbols, model);
 }

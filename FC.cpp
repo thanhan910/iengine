@@ -30,7 +30,7 @@ bool is_in_premise(Node* horn_clause, std::string& symbol)
             return false;
         }
 
-        else if (premise->type == VARIABLE)
+        else if (premise->type == SYMBOL)
         {
             return premise->value == symbol;
         }
@@ -75,13 +75,13 @@ bool FC::check()
                 count[clause] = premise->children.size();
             }
 
-            else if (premise->type == VARIABLE)
+            else if (premise->type == SYMBOL)
             {
                 count[clause] = 1;
             }
         }
 
-        else if (clause->type == VARIABLE)
+        else if (clause->type == SYMBOL)
         {
             agenda.push(clause->value);
         }
