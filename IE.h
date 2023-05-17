@@ -4,10 +4,10 @@
 class IE
 {
 protected:
-	bool KB_entails_query;
+	bool kb_entails_query;
 public:
 	IE(std::string& KB_, std::string& query_) :
-		KB_entails_query(false) { }
+		kb_entails_query(false) { }
 	virtual void print_result() = 0;
 };
 

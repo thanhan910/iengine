@@ -1,17 +1,15 @@
 #pragma once
-#include <string>
+#include "IE.h"
 #include <vector>
-#include "Node.h"
 
-class FC
+class FC : public IE
 {
-public:
-
-	FC(std::string& kb_, std::string& query_);
-	std::vector<std::string> sequence;
-	bool check();
 private:
-	std::string KB, query;
+	std::vector<std::string> sequence;
+	bool check(std::string& kb, std::string& query);
+public:
+	FC(std::string& kb_, std::string& query_);
+	void print_result() override;
 };
 
 

@@ -1,4 +1,4 @@
-#include "literal_symbols.h"
+#include "Literal.h"
 
 // Function to check if literal is a negation of a symbol or not
 bool is_negation(const std::string& literal)
@@ -21,7 +21,7 @@ std::string reverse(const std::string& literal)
 
 
 // Function to get symbol from literal
-std::string atom(const std::string& literal)
+std::string get_symbol(const std::string& literal)
 {
     if (is_negation(literal))
     {
@@ -32,3 +32,18 @@ std::string atom(const std::string& literal)
         return literal;
     }
 }
+
+// Convert literal-type node to string
+std::string convert_literal_node_to_string(Node* literal_node)
+{
+    if (literal_node->type == NOT)
+    {
+        return "~" + literal_node->children[0]->value;
+    }
+
+    else
+    {
+        return literal_node->value;
+    }
+}
+

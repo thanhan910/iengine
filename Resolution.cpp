@@ -3,7 +3,8 @@
 #include <vector>
 #include <set>
 #include "Parser.h"
-#include "literal_symbols.h"
+#include "Literal.h"
+#include "Clause.h"
 
 using namespace std;
 
@@ -21,7 +22,6 @@ bool contains(const SetType& set1, const SetType& set2)
     return true;
 }
 
-
 // Set helper: Check if a set contains an element
 template <typename T>
 bool contains(const set<T>& set_, const T& element)
@@ -30,55 +30,18 @@ bool contains(const set<T>& set_, const T& element)
 }
 
 
-
-
-
-// Apply the resolution rule to two clauses
-set<set<string>> resolve(const set<string>& c1, const set<string>& c2)
-{
-    set<set<string>> resolvents;
-
-    for (const auto& lit1 : c1)
-    {
-        string neg_lit1 = reverse(lit1);
-        if (contains(c2, neg_lit1))
-        {
-            set<string> resolvent;
-            for (const auto& lit2 : c2)
-            {
-                if (lit2 != neg_lit1)
-                {
-                    resolvent.insert(lit2);
-                }
-            }
-            for (const auto& lit3 : c1)
-            {
-                if (lit3 != lit1)
-                {
-                    resolvent.insert(lit3);
-                }
-            }
-            resolvents.insert(resolvent);
-        }
-    }
-    return resolvents;
-}
-
-
-
-
 // Prove a theorem using resolution
-bool resolution_prove(const string& KB, const string& query)
+bool check(const string& KB, const string& query)
 {
     string sentence = KB + "~(" + query + ");";
-    
+
     Parser parser(sentence);
 
-    vector<set<string>> cnf_clauses = parser.get_cnf_clauses();
+    vector<Clause> cnf_clauses = parser.get_cnf_clauses();
 
-    set<set<string>> clauses(cnf_clauses.begin(), cnf_clauses.end());
+    set<Clause> clauses(cnf_clauses.begin(), cnf_clauses.end());
 
-    set<set<string>> new_clauses;
+    set<Clause> new_clauses;
 
     while (true)
     {
@@ -86,17 +49,34 @@ bool resolution_prove(const string& KB, const string& query)
         {
             for (auto it2 = std::next(it1); it2 != clauses.end(); ++it2)
             {
-                set<string> c1 = *it1, c2 = *it2;
+                Clause c1 = *it1, c2 = *it2;
 
-                set<set<string>> resolvents = resolve(c1, c2);
-
-                for (auto& resolvent : resolvents)
+                for (const auto& lit : c1)
                 {
-                    if (resolvent.empty())
+                    string neg_lit = reverse(lit);
+                    if (c2.count(neg_lit))
                     {
-                        return true;
+                        Clause resolvent;
+                        for (const auto& lit2 : c2)
+                        {
+                            if (lit2 != neg_lit)
+                            {
+                                resolvent.insert(lit2);
+                            }
+                        }
+                        for (const auto& lit1 : c1)
+                        {
+                            if (lit1 != lit)
+                            {
+                                resolvent.insert(lit1);
+                            }
+                        }
+                        if (resolvent.empty())
+                        {
+                            return true;
+                        }
+                        new_clauses.insert(resolvent);
                     }
-                    new_clauses.insert(resolvent);
                 }
             }
         }
@@ -112,5 +92,23 @@ bool resolution_prove(const string& KB, const string& query)
 }
 
 
+Resolution::Resolution(std::string& KB, std::string& query) :
+    IE(KB, query)
+{
+    kb_entails_query = check(KB, query);
+}
 
+void Resolution::print_result()
+{
+    if (kb_entails_query)
+    {
+        std::cout << "YES";
+    }
 
+    else
+    {
+        std::cout << "NO";
+    }
+
+    std::cout << '\n';
+}

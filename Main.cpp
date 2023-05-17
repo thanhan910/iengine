@@ -1,4 +1,7 @@
 #include <iostream>
+#include <fstream>
+#include <cctype>
+#include <string>
 
 #include "TT.h"
 #include "FC.h"
@@ -6,10 +9,15 @@
 #include "DPLL.h"
 #include "Resolution.h"
 
-#include "Parser.h"
-#include "print_node.h"
 
 using namespace std;
+
+#ifdef DEBUG
+
+#include "Model.h"
+#include "IE.h"
+#include "Parser.h"
+#include "print_node.h"
 
 // Define a function that prints out the number of Node instances created throughout the program, just to check whether there are redundant Node instances that should have been deleted or not.
 void print_nodes_creations()
@@ -27,164 +35,139 @@ void test_parser(string& input, string& query)
     cout << query << endl;
     cout << endl;
 
-    cout << "TREE KB:\n\n";
+    cout << "KB:\n\n";
     Parser parser(input);
-    print_node(parser.get_tree());
+    print_node_bracket_style(parser.get_tree());
     cout << endl;
 
-    cout << "QUERY TREE :\n\n";
+    cout << "QUERY:\n\n";
     Parser parser_q(query);
-    print_node(parser_q.get_tree());
+    print_node_bracket_style(parser_q.get_tree());
     cout << endl;
 }
 
-void tt(string& input, string& query)
+void test_horn(string& KB, string& query)
 {
-    // TEST TT
-
-    TT ie_tt = TT(input, query);
-
-    if (ie_tt.check())
-    {
-        cout << "YES: " << ie_tt.model_count << endl;
-    }
-
-    else
-    {
-        cout << "NO\n";
-    }
+    cout << KB << endl << query << endl;
+    cout << "TT:\n"; TT(KB, query).print_result();
+    cout << "FC:\n"; FC(KB, query).print_result();
+    cout << "BC:\n"; BC(KB, query).print_result();
 }
 
-void fc(string& input, string& query)
+void test_general(string& KB, string& query)
 {
-    // TEST FC
-
-    FC ie_fc = FC(input, query);
-
-    if (ie_fc.check())
-    {
-        cout << "YES:";
-
-        for (int i = 0; i < ie_fc.sequence.size(); i++)
-        {
-            cout << " " << ie_fc.sequence[i];
-
-            if (i < ie_fc.sequence.size() - 1)
-            {
-                cout << ",";
-            }
-        }
-
-        cout << endl;
-    }
-    else
-    {
-        cout << "NO\n";
-    }
+    cout << KB << endl << query << endl;
+    cout << "TT:\n"; TT(KB, query).print_result();
+    cout << "RESOLUTION:\n"; Resolution(KB, query).print_result();
+    cout << "DPLL:\n"; DPLL(KB, query).print_result();
 }
 
-void bc(string& input, string& query)
-{
-    // TEST BC
-
-    BC ie_bc = BC(input, query);
-
-    if (ie_bc.check())
-    {
-        cout << "YES:";
-
-        for (int i = 0; i < ie_bc.sequence.size(); i++)
-        {
-            cout << " " << ie_bc.sequence[i];
-
-            if (i < ie_bc.sequence.size() - 1)
-            {
-                cout << ",";
-            }
-        }
-
-        cout << endl;
-    }
-
-    else
-    {
-        cout << "NO\n";
-    }
-}
-
-void dpll(string& input, string& query)
-{
-    DPLL ie = DPLL(input, query);
-
-    cout << (ie.get_result()  ? "YES" : "NO") << endl;
-}
-
-void res(string& input, string& query)
-{
-    cout << (resolution_prove(input, query) ? "YES" : "NO") << endl;
-}
-
-void test_horn(string& input, string& query)
-{
-    tt(input, query);
-
-    fc(input, query);
-
-    bc(input, query);
-
-
-}
-
-void test_general(string& input, string& query)
-{
-
-    tt(input, query);
-
-    dpll(input, query);
-
-    res(input, query);
-    
-}
-
-
-
-#include "Model.h"
-// Example usage
 int main()
 {
+    string KB, query;
 
-    // Read input from standard input
-    string input, query;
+    KB = "p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;";
+    query = "d";
+    test_horn(KB, query);
 
-
-
-    //input = "p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;";
-    //query = "d";
-    //test_horn(input, query);
-    ////
-    ////query = "a";
-    ////test_horn(input, query);
-
-
-    input = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
-    
-    //query = "d";
-    //test_general(input, query);
-
-    //query = "c";
-    //test_general(input, query);
-
-    //query = "c & d";
-    //test_general(input, query);
-
-
-    //query = "f";
-    //test_general(input, query);
-    
     query = "a";
-    test_general(input, query);
+    test_horn(KB, query);
+
+
+    KB = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
+
+    query = "d";
+    test_general(KB, query);
+
+    query = "c";
+    test_general(KB, query);
+
+    query = "c & d";
+    test_general(KB, query);
+
+    query = "f";
+    test_general(KB, query);
+
+    query = "a";
+    test_general(KB, query);
 
     cout << Model::instanceCreated << " " << Model::instanceDeleted;
-    
+
     return 0;
 }
+
+#else
+
+int main(int argc, char* argv[])
+{
+    if (argc < 3)
+    {
+        cout << "Command should be: " << argv[0] << " <method> <filename>\n";
+        return 0;
+    }
+
+    string method = argv[1], filename = argv[2];
+
+    // Open and read file
+    ifstream input_file(argv[2]);
+    if (!input_file.is_open())
+    {
+        std::cerr << "Could not open file " << argv[2] << endl;
+        return 0;
+    }
+
+    // Read each line in file
+    string TELL, KB, ASK, query;
+    getline(input_file, TELL); // Read "TELL"
+    getline(input_file, KB); // Read Knowledge Base
+    getline(input_file, ASK); // Read "ASK"
+    getline(input_file, query); // Read query
+
+
+    // Convert method to uppercase
+    for (char& c : method)
+    {
+        c = toupper(c);
+    }
+    // Create and run IE
+    if (method == "TT")
+    {
+        TT(KB, query).print_result();
+    }
+    else if (method == "FC")
+    {
+        FC(KB, query).print_result();
+    }
+    else if (method == "BC")
+    {
+        BC(KB, query).print_result();
+    }
+    else if (method == "DPLL")
+    {
+        DPLL(KB, query).print_result();
+    }
+    else if (method == "RESOLUTION")
+    {
+        Resolution(KB, query).print_result();
+    }
+    else if (method == "HORN")
+    {
+        TT(KB, query).print_result();
+        FC(KB, query).print_result();
+        BC(KB, query).print_result();
+    }
+    else if (method == "GENERIC")
+    {
+        TT(KB, query).print_result();
+        Resolution(KB, query).print_result();
+        DPLL(KB, query).print_result();
+    }
+    else
+    {
+        // If method is not available, exit
+        std::cerr << "<method> when in uppercase should be TT, FC, BC, DPLL, RESOLUTION, HORN, or GENERIC\n";
+        return 0;
+    }
+    return 0;
+}
+#endif // DEBUG

@@ -7,136 +7,115 @@
 #include "Parser.h"
 
 FC::FC(std::string& kb_, std::string& query_) :
-    KB(kb_),
-    query(query_)
-{ }
-
-bool is_in_premise(Node* horn_clause, std::string& symbol)
+    IE(kb_, query_)
 {
-    if (horn_clause->type == IMPLIES)
-    {
-        Node* premise = horn_clause->children[0];
-        
-        if (premise->type == AND)
-        {
-            for (Node* child : premise->children)
-            {
-                if (child->value == symbol)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        else if (premise->type == SYMBOL)
-        {
-            return premise->value == symbol;
-        }
-
-        else return false;
-    }
-
-    return false;
+    kb_entails_query = check(kb_, query_);
 }
 
-bool FC::check()
+void FC::print_result()
 {
-    Parser parser_kb(KB);
+    if (kb_entails_query)
+    {
+        std::cout << "YES:";
 
-    std::set<std::string> symbols = parser_kb.get_symbols();
+        for (size_t i = 0; i < sequence.size(); i++)
+        {
+            std::cout << " " << sequence[i];
 
-    std::vector<Node*> clauses = parser_kb.get_tree()->children;
+            if (i < sequence.size() - 1)
+            {
+                std::cout << ",";
+            }
+        }
+    }
 
-    std::unordered_map<std::string, bool> inferred;
+    else
+    {
+        std::cout << "NO\n";
+    }
 
-    std::queue<std::string> agenda;
+    std::cout << "\n";
+}
+
+
+// Main check function
+bool FC::check(std::string& kb, std::string& query)
+{
+    Parser parser(kb);
     
-    std::unordered_map<Node*, size_t> count;
+    std::set<std::string> symbols = parser.get_symbols();
 
     // Initialize inferred symbols to false
+
+    std::unordered_map<std::string, bool> inferred;
 
     for (auto& symbol : symbols)
     {
         inferred[symbol] = false;
     }
 
-    // Initialize agenda and count
+    // Initialize agenda queue and count map
 
-    for (Node* clause : clauses)
+    std::queue<std::string> agenda; 
+
+    std::vector<HornClause> clauses = parser.get_horn_clauses();
+
+    std::vector<size_t> count; // the number of literals in antedecent that is not yet inferred
+
+    for (size_t i = 0; i < clauses.size(); i++)
     {
-        if (clause->type == IMPLIES)
+        count.push_back(clauses[i].first.size());
+
+        if (clauses[i].first.size() == 0)
         {
-            Node* premise = clause->children[0];
-
-            if (premise->type == AND)
-            {
-                count[clause] = premise->children.size();
-            }
-
-            else if (premise->type == SYMBOL)
-            {
-                count[clause] = 1;
-            }
-        }
-
-        else if (clause->type == SYMBOL)
-        {
-            agenda.push(clause->value);
+            agenda.push(clauses[i].second);
         }
     }
 
-    // Perform Forward Chaining
-
+    // Iterate until agenda is empty
     while (!agenda.empty())
     {
         std::string symbol = agenda.front();
         agenda.pop();
 
-        
-        if (inferred[symbol])
-        {
-            continue;
-        }
+        if (inferred[symbol]) continue;
 
         sequence.push_back(symbol);
 
         // If the symbol is the query symbol, return true
         if (symbol == query)
         {
+            sequence.push_back(symbol);
             return true;
         }
 
-        // Infer the symbol's truth value
         inferred[symbol] = true;
 
-        
-        for (Node* clause : clauses)
-        { 
+        // Infer the symbol's truth value
+        for (size_t i = 0; i < clauses.size(); i++)
+        {
+            // Optimization: Skip the horn clauses with all literals in antedecents already inferred
+            if (count[i] == 0) continue;
+
             // for each Horn clause c in whose premise p appears do
-
-            if (is_in_premise(clause, symbol))
+            if (clauses[i].first.count(symbol))
             {
-                count[clause] -= 1;
+                count[i]--;
 
-                if (count[clause] == 0)
+                if (count[i] == 0)
                 {
-                    std::string con = clause->children[1]->value;
-
-                    if (con == query)
+                    if (clauses[i].second == query)
                     {
-                        sequence.push_back(con);
-
+                        sequence.push_back(query);
                         return true;
                     }
-
-                    agenda.push(con);
+                    agenda.push(clauses[i].second);
                 }
             }
         }
     }
 
-
     return false;
 }
+
+

@@ -2,12 +2,11 @@
 #include "Parser.h"
 #include "Model.h"
 #include "print_node.h"
-#include <unordered_map>
-#include <set>
-
+#include <iostream>
 
 TT::TT(std::string& kb_, std::string& query_) :
-	model_count(0)
+	IE(kb_, query_), 
+    model_count(0)
 {
     Parser parser_kb(kb_);
     Parser parser_query(query_);
@@ -15,32 +14,23 @@ TT::TT(std::string& kb_, std::string& query_) :
     KB = parser_kb.get_tree();
 	query = parser_query.get_tree();
 
-    // Get a list of all unique symbols in the knowledge base and the query symbol
+    // Get a set of all unique symbols in the knowledge base and the query symbol
     std::set<std::string> symbols_set_kb = parser_kb.get_symbols();
     std::set<std::string> symbols_set_query = parser_query.get_symbols();
+    std::set<std::string> symbols_set;
+    for (auto& s : symbols_set_kb) symbols_set.insert(s);
+    for (auto& s : symbols_set_query) symbols_set.insert(s);
 
-    for (auto& s : symbols_set_kb)
-    {
-        symbols_set.insert(s);
-    }
-
-    for (auto& s : symbols_set_query)
-    {
-        symbols_set.insert(s);
-    }
-}
-
-bool TT::check()
-{
     // Transform the set of symbols into a stack
     std::vector<std::string> symbols(symbols_set.rbegin(), symbols_set.rend());
 
     // Create a map to store the truth values of each symbol in the knowledge base and the query symbol
     Model model;
 
-    return check_all(symbols, model);
+    kb_entails_query = check_all(symbols, model);
 }
 
+// Backtrack: Recursively construct the model then check the logic value of kb and query
 bool TT::check_all(std::vector<std::string> symbols, Model model)
 {
     if (symbols.empty())
@@ -83,3 +73,17 @@ bool TT::check_all(std::vector<std::string> symbols, Model model)
     }
 }
 
+void TT::print_result()
+{
+    if (kb_entails_query)
+    {
+        std::cout << "YES: " << model_count;
+    }
+
+    else
+    {
+        std::cout << "NO";
+    }
+
+    std::cout << '\n';
+}

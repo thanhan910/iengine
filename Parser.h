@@ -2,7 +2,7 @@
 #include "Token.h"
 #include "Node.h"
 #include "HornClause.h"
-#include "cnf.h"
+#include "Clause.h"
 #include <string>
 #include <vector>
 #include <set>

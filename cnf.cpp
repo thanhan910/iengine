@@ -71,7 +71,7 @@ Node* cnf_negation(Node* node)
     }
 }
 
-Node* conjunction(Node* node)
+Node* cnf_conjunction(Node* node)
 {
     // Flatten conjunctions: (A & B) & C = A & B & C
     std::vector<Node*> flattened;
@@ -94,10 +94,10 @@ Node* conjunction(Node* node)
 Node* cnf_disjunction(Node* node)
 {
     // Flatten disjunctions
+
     std::vector<Node*> flattened;
 
-    // Store conjunction if encountered
-    Node* conjunction_node = nullptr;
+    Node* conjunction_node = nullptr; // Store conjunction if encountered in loop
 
     for (auto& child : node->children)
     {
@@ -174,7 +174,7 @@ Node* cnf(Node* node)
         return cnf_negation(node);
     }
     case AND: {
-        return conjunction(node);
+        return cnf_conjunction(node);
     }
     case OR: {
         return cnf_disjunction(node);

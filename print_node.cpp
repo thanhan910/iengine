@@ -1,17 +1,9 @@
 #include "print_node.h"
 #include <iostream>
-//#define TREE_STYLE
-//#define PAREN_STYLE
-#define BRACKET_STYLE
 
-void print_node(Node* node, std::string prefix, std::string child_prefix)
+void print_node_tree_style(Node* node, std::string prefix, std::string child_prefix)
 {
-    if (node == nullptr)
-    {
-        return;
-    }
-
-#ifdef TREE_STYLE
+    if (node == nullptr) return;
 
     std::cout << prefix << node->value << std::endl;
 
@@ -23,10 +15,13 @@ void print_node(Node* node, std::string prefix, std::string child_prefix)
 
         std::cout << child_prefix << ":\n";
 
-        print_node(child, child_prefix + ":...", grandchild_prefix);
+        print_node_tree_style(child, child_prefix + ":...", grandchild_prefix);
     }
-#endif
-#ifdef PAREN_STYLE
+}
+
+void print_node_parentheses_style(Node* node)
+{
+    if (node == nullptr) return;
 
     std::cout << node->value;
 
@@ -36,7 +31,9 @@ void print_node(Node* node, std::string prefix, std::string child_prefix)
         {
             std::cout << "( ";
         }
-        print_node(node->children[i]);
+        
+        print_node_parentheses_style(node->children[i]);
+
         if (i < node->children.size() - 1)
         {
             std::cout << ", ";
@@ -46,9 +43,11 @@ void print_node(Node* node, std::string prefix, std::string child_prefix)
             std::cout << " )";
         }
     }
-#endif
+}
 
-#ifdef BRACKET_STYLE
+void print_node_bracket_style(Node* node, std::string prefix)
+{
+    if (node == nullptr) return;
 
     if (node->type == TokenType::NOT)
     {
@@ -70,7 +69,7 @@ void print_node(Node* node, std::string prefix, std::string child_prefix)
 
         for (int i = 0; i < child->children.size(); i++)
         {
-            print_node(child->children[i], prefix + ":  ");
+            print_node_bracket_style(child->children[i], prefix + ":  ");
         }
 
         std::cout << prefix << "}\n";
@@ -93,11 +92,8 @@ void print_node(Node* node, std::string prefix, std::string child_prefix)
 
     for (int i = 0; i < node->children.size(); i++)
     {
-        print_node(node->children[i], prefix + ":  ");
+        print_node_bracket_style(node->children[i], prefix + ":  ");
     }
 
     std::cout << prefix << "}\n";
-#endif
-
-
 }

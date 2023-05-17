@@ -1,26 +1,19 @@
 #pragma once
 #include "Node.h"
-
+#include "IE.h"
+#include "Model.h"
 #include <string>
 #include <vector>
-#include <set>
-#include <unordered_map>
-
-#include <iostream>
-#include <unordered_map>
-#include "Model.h"
 
 
 
-class TT
+class TT : public IE
 {
 private:
 
 	Node* KB;
 	Node* query;
-
-	std::set<std::string> symbols_set;
-
+	
 	bool check_all(std::vector<std::string> symbols, Model model);
 
 public:
@@ -28,6 +21,6 @@ public:
 
 	TT(std::string& kb_, std::string& query_);
 
-	bool check();
+	void print_result() override;
 };
 

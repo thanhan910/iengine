@@ -1,6 +1,8 @@
 #include "Parser.h"
 #include "ParseTree.h"
 #include "cnf.h"
+#include "Clause.h"
+#include <iostream>
 
 Parser::Parser(std::string& input_) :
     input(input_),
@@ -90,11 +92,7 @@ void Parser::create_tree()
 {
     tree_created = true;
 
-    ParseTree tree(tokens);
-
-    tree.parse();
-
-    root = tree.root_node;
+    root = ParseTree(tokens).get_root();
 }
 
 void Parser::convert_to_cnf()

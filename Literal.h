@@ -1,4 +1,5 @@
 #pragma once
+#include "Node.h"
 #include <string>
 
 
@@ -9,5 +10,8 @@ bool is_negation(const std::string& literal);
 std::string reverse(const std::string& literal);
 
 // Function to get symbol from literal
-std::string atom(const std::string& literal);
+std::string get_symbol(const std::string& literal);
+
+// Convert literal-type node to string
+std::string convert_literal_node_to_string(Node* literal_node);
 

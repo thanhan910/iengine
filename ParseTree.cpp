@@ -19,14 +19,9 @@ bool ParseTree::current_token_is(TokenType type)
 
 ParseTree::ParseTree(std::vector<Token> tokens_) :
     tokens(tokens_),
-    index(0),
-    root_node(nullptr)
+    index(0)
 {
-}
-
-void ParseTree::parse()
-{
-    root_node = new Node(TokenType::AND, "AND");
+    root_node = new Node(AND, "AND");
 
     while (parser_is_in_scope())
     {
@@ -37,7 +32,7 @@ void ParseTree::parse()
             std::cerr << "Unexpected token: " << tokens[index].value << std::endl;
             exit(1);
         }
-        
+
         root_node->children.push_back(expr);
 
         if (current_token_is(SEMICOLON))
@@ -50,11 +45,16 @@ void ParseTree::parse()
             }
         }
 
-        else if(root_node->children.size() <= 1)
+        else if (root_node->children.size() <= 1)
         {
             root_node = expr;
         }
     }
+}
+
+Node* ParseTree::get_root()
+{
+    return root_node;
 }
 
 Node* ParseTree::parse_expression()
@@ -85,7 +85,7 @@ Node* ParseTree::parse_implication()
 
     if (nodes.size() > 1)
     {
-        return new Node{ TokenType::IMPLIES, "IMPLY", nodes };
+        return new Node{ IMPLIES, "IMPLIES", nodes };
     }
 
     else
@@ -116,7 +116,7 @@ Node* ParseTree::parse_biconditional()
     }
     if (nodes.size() > 1)
     {
-        return new Node{ TokenType::BICONDITIONAL, "BICONDITIONAL", nodes };
+        return new Node{ BICONDITIONAL, "BICONDITIONAL", nodes };
     }
     else
     {
@@ -145,7 +145,7 @@ Node* ParseTree::parse_disjunction()
     }
     if (nodes.size() > 1)
     {
-        return new Node{ TokenType::OR, "OR", nodes };
+        return new Node{ OR, "OR", nodes };
     }
     else
     {
@@ -176,7 +176,7 @@ Node* ParseTree::parse_conjunction()
 
     if (nodes.size() > 1)
     {
-        return new Node{ TokenType::AND, "AND", nodes };
+        return new Node{ AND, "AND", nodes };
     }
 
     else
