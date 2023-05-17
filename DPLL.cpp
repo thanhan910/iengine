@@ -25,19 +25,6 @@ DPLL::DPLL(std::string& KB_, std::string& query_) :
     kb_entails_query = !dpll(clauses, symbols, model);
 }
 
-void DPLL::print_result()
-{
-    if (kb_entails_query)
-    {
-        cout << "YES";
-    }
-    else
-    {
-        cout << "NO";
-    }
-    cout << endl;
-}
-
 // Main DPLL algorithm function
 bool DPLL::dpll(std::vector<Clause> clauses, std::set<std::string> symbols, Model model)
 {
@@ -156,4 +143,17 @@ bool DPLL::dpll(std::vector<Clause> clauses, std::set<std::string> symbols, Mode
     if (dpll(clauses, symbols, model)) return true;
 
     return false;
+}
+
+void DPLL::print_result()
+{
+    if (kb_entails_query)
+    {
+        cout << "YES";
+    }
+    else
+    {
+        cout << "NO";
+    }
+    cout << endl;
 }
