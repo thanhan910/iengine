@@ -13,7 +13,7 @@ std::set<std::string> get_symbols(Node* node)
 {
     std::set<std::string> sequence;
 
-    if (node->type == VARIABLE)
+    if (node->type == SYMBOL)
     {
         sequence.insert(node->value);
 
@@ -36,7 +36,7 @@ std::set<std::string> get_symbols(Node* node)
 
 std::set<std::string> GetAntecedents(Node* horn_node)
 {
-    if (horn_node->type == VARIABLE)
+    if (horn_node->type == SYMBOL)
     {
         return std::set<std::string>();
     }
@@ -55,7 +55,7 @@ std::set<std::string> GetAntecedents(Node* horn_node)
 
 std::string GetConsequent(Node* horn_node)
 {
-    if (horn_node->type == VARIABLE)
+    if (horn_node->type == SYMBOL)
     {
         return horn_node->value;
     }

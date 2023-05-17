@@ -152,27 +152,33 @@ int main()
 
     // Read input from standard input
     string input, query;
-    input = "p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;";
-    //query = "d";
+
+
+
+    //input = "p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;";
+    ////query = "d";
+    ////test_horn(input, query);
+    //
+    //query = "a";
     //test_horn(input, query);
+
+
+    input = "(a <=> (c => ~d)) & b & b => a; c; ~f || g;";
     
-    query = "a";
-    test_horn(input, query);
+    //query = "d";
+    //test_general(input, query);
+
+    //query = "c";
+    //test_general(input, query);
+
+    //query = "c & d";
+    //test_general(input, query);
 
 
-    input = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
-    query = "d";
-
-    test_general(input, query);
-
-    query = "c";
-    test_general(input, query);
-
-    query = "c & d";
-    test_general(input, query);
-
-
-    query = "f";
+    //query = "f";
+    //test_general(input, query);
+    
+    query = "b || ~b";
     test_general(input, query);
     
     return 0;
