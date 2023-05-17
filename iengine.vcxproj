@@ -132,6 +132,7 @@
     <ClCompile Include="cnf_node.cpp" />
     <ClCompile Include="DPLL.cpp" />
     <ClCompile Include="FC.cpp" />
+    <ClCompile Include="HornClause.cpp" />
     <ClCompile Include="KEYWORDS.cpp" />
     <ClCompile Include="literal_symbols.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -148,6 +149,8 @@
     <ClInclude Include="cnf.h" />
     <ClInclude Include="DPLL.h" />
     <ClInclude Include="FC.h" />
+    <ClInclude Include="HornClause.h" />
+    <ClInclude Include="IE.h" />
     <ClInclude Include="KEYWORDS.h" />
     <ClInclude Include="literal_symbols.h" />
     <ClInclude Include="Model.h" />

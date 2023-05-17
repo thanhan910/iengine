@@ -13,7 +13,7 @@ std::string convert_literal_node_to_string(Node* literal_node)
     }
 }
 
-std::set<std::string> convert_clause_node_to_string_sets(Node* clause_node)
+Clause convert_clause_node_to_string_sets(Node* clause_node)
 {
     if (clause_node->type == NOT || clause_node->type == SYMBOL)
     {
@@ -37,7 +37,7 @@ std::set<std::string> convert_clause_node_to_string_sets(Node* clause_node)
     }
 }
 
-std::vector<std::set<std::string>> convert_cnf_node_to_string_sets(Node* cnf_node)
+std::vector<Clause> convert_root_node_to_clauses(Node* cnf_node)
 {
     if (cnf_node->type == NOT || cnf_node->type == SYMBOL)
     {
@@ -48,23 +48,23 @@ std::vector<std::set<std::string>> convert_cnf_node_to_string_sets(Node* cnf_nod
 
     else if (cnf_node->type == OR)
     {
-        std::set<std::string> clause = convert_clause_node_to_string_sets(cnf_node);
+        Clause clause = convert_clause_node_to_string_sets(cnf_node);
 
         return { clause };
     }
 
     else
     {
-        std::vector<std::set<std::string>> sequence;
+        std::vector<Clause> clauses;
 
         for (auto& clause_node : cnf_node->children)
         {
             std::set<std::string> clause = convert_clause_node_to_string_sets(clause_node);
 
-            sequence.push_back(clause);
+            clauses.push_back(clause);
         }
 
-        return sequence;
+        return clauses;
     }
 }
 

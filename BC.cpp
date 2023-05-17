@@ -72,16 +72,14 @@ std::string GetConsequent(Node* horn_node)
     }
 }
 
-BC::BC(std::string& kb_, std::string& query_) :
-    query(query_)
+BC::BC(std::string& KB_, std::string& query_) :
+    IE(KB_, query_)
 {
-    Parser parser(kb_);
-    KB = parser.get_tree();
-}
+    Parser parser(KB_);
 
-bool BC::check()
-{
-    return ask(query);
+    KB = parser.get_tree();
+
+    KB_entails_query = ask(query_);
 }
 
 

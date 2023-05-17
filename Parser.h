@@ -1,6 +1,8 @@
 #pragma once
 #include "Token.h"
 #include "Node.h"
+#include "HornClause.h"
+#include "cnf.h"
 #include <string>
 #include <vector>
 #include <set>
@@ -33,6 +35,8 @@ public:
 
 	Node* get_cnf_tree();
 
-	std::vector<std::set<std::string>> get_cnf_clauses();
+	std::vector<Clause> get_cnf_clauses();
+	
+	std::vector<HornClause> get_horn_clauses();
 };
 

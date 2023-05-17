@@ -1,17 +1,37 @@
 #include "DPLL.h"
 #include "Parser.h"
+#include "literal_symbols.h"
+#include "Model.h"
+
 #include <iostream>
 #include <vector>
 #include <unordered_map>
 #include <set>
 #include <string>
-#include "literal_symbols.h"
-#include "Model.h"
 
 using namespace std;
 
+DPLL::DPLL(std::string& KB_, std::string& query_) :
+    IE(KB_, query_)
+{
+    string sentence = KB_ + "~(" + query_ + ");";
 
+    Parser parser(sentence);
 
+    vector<Clause> clauses = parser.get_cnf_clauses();
+
+    set<string> symbols = parser.get_symbols();
+
+    Model model;
+
+    KB_entails_query = !dpll(clauses, symbols, model);
+}
+
+void DPLL::print_result()
+{
+    cout << KB_entails_query ? "YES" : "NO";
+    cout << endl;
+}
 
 // Main DPLL algorithm function
 bool DPLL::dpll(std::vector<Clause> clauses, std::set<std::string> symbols, Model model)
@@ -131,24 +151,4 @@ bool DPLL::dpll(std::vector<Clause> clauses, std::set<std::string> symbols, Mode
     if (dpll(clauses, symbols, model)) return true;
 
     return false;
-}
-
-DPLL::DPLL(std::string& KB_, std::string& query_)
-{
-    string sentence = KB_ + "~(" + query_ + ");";
-
-    Parser parser(sentence);
-
-    vector<Clause> clauses = parser.get_cnf_clauses();
-
-    set<string> symbols = parser.get_symbols();
-
-    Model model;
-
-    result = !dpll(clauses, symbols, model);
-}
-
-bool& DPLL::get_result()
-{
-    return result;
 }

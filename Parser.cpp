@@ -99,6 +99,8 @@ void Parser::create_tree()
 
 void Parser::convert_to_cnf()
 {
+    converted_to_cnf = true;
+
     root = cnf(root);
 }
 
@@ -139,5 +141,13 @@ std::vector<std::set<std::string>> Parser::get_cnf_clauses()
     if (!tree_created) create_tree();
     if (!converted_to_cnf) convert_to_cnf();
 
-    return convert_cnf_node_to_string_sets(root);
+    return convert_root_node_to_clauses(root);
+}
+
+std::vector<HornClause> Parser::get_horn_clauses()
+{
+    if (!tokenized) tokenize();
+    if (!tree_created) create_tree();
+
+    return convert_root_node_to_horn_clauses(root);
 }
