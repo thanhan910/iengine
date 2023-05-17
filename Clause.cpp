@@ -16,9 +16,7 @@ Clause convert_clause_node_to_set(Node* clause_node)
 
         for (auto& literal_node : clause_node->children)
         {
-            std::string l = convert_literal_node_to_string(literal_node);
-
-            clause.insert(l);
+            clause.insert(convert_literal_node_to_string(literal_node));
         }
 
         return clause;
