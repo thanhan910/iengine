@@ -24,8 +24,11 @@ int pl_value(Model& model, Node* node)
 
     switch (node->type)
     {
-    case BOOLEAN: {
-        return node->value == "1" ? 1 : 0;
+    case TRUE: {
+        return true;
+    }
+    case FALSE: {
+        return false;
     }
     case SYMBOL: {
 

@@ -11,59 +11,55 @@
 using namespace std;
 
 
-typedef set<string> Clause;
 
 
 // Main DPLL algorithm function
 bool dpll(vector<Clause> clauses, set<string> symbols, Model model)
 {
-    bool all_clauses_true = true;
 
-    unordered_map<string, bool> is_pure;
+    // Simultaneously perform unit propagation, pure literal elimination, and check the pl value of the sentence
+    bool all_clauses_true = true; // If there is one false or indeterminate clause, then not all clauses are true
 
-    unordered_map<string, bool> symbol_value;
+    // Track the pure symbols for pure literal elimination
+    unordered_map<string, bool> symbol_value; // This map just track the value of the symbol in the first occurence
+    unordered_map<string, bool> is_pure; // If the symbol already exists in symbol_value but it's value is different, then it is not pure
 
-    for (Clause& clause : clauses)
+    // Iterate over all clauses
+    for (auto& clause : clauses)
     {
-        bool clause_true = false;
+        // Track if the clause is true or false or indeterminate
+        bool clause_true = false; // If there is a true literal, then the clause is true
+        bool clause_false = true; // If all literals are false, then the clause is false
 
-        bool clause_false = true;
+        // Track unit symbols
+        // If the literal is the only literal in the clause that is not assigned any value, then that is a unit literal
+        string unassigned_symbol = ""; // Record the unassigned literal's symbol 
+        bool unassigned_value = false; // Record the unassigned symbol's value
+        size_t unassigned_literal_count = clause.size(); // Count the number of unassigned literals in the 
 
-        string unassigned_symbol = "";
-
-        bool unassigned_value = false;
-
-        size_t unassigned_literal_count = clause.size();
-
-        for (auto& literal : clause)
+        // Iterate over all literals in the clause
+        for (auto& lit : clause)
         {
-            string symbol = atom(literal);
-            bool value = !is_negation(literal);
+            string symbol = atom(lit); 
+            bool value = !is_negation(lit);
 
-            if (model.find(symbol) != model.end())
+            if (model.count(symbol))
             {
-                if (model[symbol] == value)
+                unassigned_literal_count--;
+
+                if (value == model[symbol])
                 {
                     clause_true = true;
                     clause_false = false;
                     break;
                 }
-
-                else
-                {
-                    unassigned_literal_count--;
-                }
             }
 
-            else
+            else // when the symbol is not in the model
             {
                 clause_false = false;
 
-                if (unassigned_symbol == "")
-                {
-                    unassigned_symbol = symbol;
-                    unassigned_value = value;
-                }
+                unassigned_symbol = symbol; unassigned_value = value;
 
                 if (is_pure.find(symbol) != is_pure.end())
                 {
@@ -71,8 +67,8 @@ bool dpll(vector<Clause> clauses, set<string> symbols, Model model)
                 }
                 else
                 {
-                    is_pure[symbol] = true;
                     symbol_value[symbol] = value;
+                    is_pure[symbol] = true; // temporary make it true when only one occurence of the symbol is found
                 }
             }
         }
@@ -83,6 +79,7 @@ bool dpll(vector<Clause> clauses, set<string> symbols, Model model)
 
             if (unassigned_symbol != "" && unassigned_literal_count == 1)
             {
+                // Unit literal found
                 symbols.erase(unassigned_symbol);
                 model[unassigned_symbol] = unassigned_value;
                 return dpll(clauses, symbols, model);
@@ -100,10 +97,8 @@ bool dpll(vector<Clause> clauses, set<string> symbols, Model model)
         return true;
     }
 
-    // Find pure symbols
-
+    // Find and eliminate (assign values to) pure symbols
     bool pure_symbol_exist = false;
-
     for (auto& symbol : is_pure)
     {
         if (symbol.second)
@@ -116,12 +111,12 @@ bool dpll(vector<Clause> clauses, set<string> symbols, Model model)
 
         }
     }
-
     if (pure_symbol_exist)
     {
         return dpll(clauses, symbols, model);
     }
 
+    // If all symbols are assigned values, return false
     if (symbols.empty())
     {
         return false;

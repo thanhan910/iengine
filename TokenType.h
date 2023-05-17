@@ -10,7 +10,8 @@ enum TokenType
     NOT,
     SYMBOL,
     SEMICOLON,
-    BOOLEAN
+    TRUE,
+    FALSE
 };
 
 
