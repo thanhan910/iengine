@@ -62,7 +62,7 @@ bool TT::check_all(std::vector<std::string> symbols, std::unordered_map<std::str
             }
         }
 
-        else if (pl_kb == 0)
+        else
         {
             return true;
         }
