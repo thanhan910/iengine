@@ -114,7 +114,9 @@ void bc(string& input, string& query)
 
 void dpll(string& input, string& query)
 {
-    cout << (dpll_prove(input, query) ? "YES" : "NO") << endl;
+    DPLL ie = DPLL(input, query);
+
+    cout << (ie.get_result()  ? "YES" : "NO") << endl;
 }
 
 void res(string& input, string& query)

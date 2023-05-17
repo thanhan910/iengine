@@ -1,14 +1,15 @@
 #pragma once
 #include <string>
 #include <set>
+#include "Model.h"
 
 typedef std::set<std::string> Clause;
 
-// Wrapper function to call the DPLL algorithm
-bool dpll_satisfiable(std::string& sentence);
-
-// Wrapper function to check if KB entails query using DPLL
-bool dpll_prove(std::string& KB, std::string& query);
-
-
-
+class DPLL
+{
+	bool result;
+	bool dpll(std::vector<Clause> clauses, std::set<std::string> symbols, Model model);
+public:
+	DPLL(std::string& KB_, std::string& query_);
+	bool& get_result();
+};

@@ -14,9 +14,8 @@ using namespace std;
 
 
 // Main DPLL algorithm function
-bool dpll(vector<Clause> clauses, set<string> symbols, Model model)
+bool DPLL::dpll(std::vector<Clause> clauses, std::set<std::string> symbols, Model model)
 {
-
     // Simultaneously perform unit propagation, pure literal elimination, and check the pl value of the sentence
     bool all_clauses_true = true; // If there is one false or indeterminate clause, then not all clauses are true
 
@@ -40,7 +39,7 @@ bool dpll(vector<Clause> clauses, set<string> symbols, Model model)
         // Iterate over all literals in the clause
         for (auto& lit : clause)
         {
-            string symbol = atom(lit); 
+            string symbol = atom(lit);
             bool value = !is_negation(lit);
 
             if (model.count(symbol))
@@ -134,9 +133,10 @@ bool dpll(vector<Clause> clauses, set<string> symbols, Model model)
     return false;
 }
 
-// Wrapper function to call the DPLL algorithm
-bool dpll_satisfiable(string& sentence)
+DPLL::DPLL(std::string& KB_, std::string& query_)
 {
+    string sentence = KB_ + "~(" + query_ + ");";
+
     Parser parser(sentence);
 
     vector<Clause> clauses = parser.get_cnf_clauses();
@@ -145,17 +145,10 @@ bool dpll_satisfiable(string& sentence)
 
     Model model;
 
-    return dpll(clauses, symbols, model);
+    result = !dpll(clauses, symbols, model);
 }
 
-bool dpll_prove(string& KB, string& query)
+bool& DPLL::get_result()
 {
-    string sentence = KB + "~(" + query + ");";
-
-    return !dpll_satisfiable(sentence);
+    return result;
 }
-
-
-
-
-
