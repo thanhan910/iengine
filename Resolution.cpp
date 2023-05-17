@@ -29,25 +29,6 @@ bool contains(const set<T>& set_, const T& element)
     return set_.count(element) > 0;
 }
 
-// DEBUG: Set helper: Print set
-void print_set(const set<string>& s)
-{
-    for (auto& e : s)
-    {
-        cout << e << " ";
-    }
-    cout << endl;
-}
-
-// DEBUG: Set helper: Print set
-void print_set(const set<set<string>>& s)
-{
-    for (auto& ss : s)
-    {
-        print_set(ss);
-    }
-    cout << endl;
-}
 
 
 
