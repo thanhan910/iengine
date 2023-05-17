@@ -2,11 +2,14 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <unordered_set>
+#include <utility>
 #include "Parser.h"
 #include "Literal.h"
-#include "Clause.h"
+
 
 using namespace std;
+
 
 // Set helper: Check if a set contains a set
 template <typename SetType>
@@ -30,21 +33,26 @@ bool contains(const set<T>& set_, const T& element)
 }
 
 
-// Prove a theorem using resolution
-bool check(const string& KB, const string& query)
+
+Resolution::Resolution(std::string& KB, std::string& query) :
+    IE(KB, query)
 {
     string sentence = KB + "~(" + query + ");";
 
-    Parser parser(sentence);
+    vector<Clause> cnf_clauses = Parser(sentence).get_cnf_clauses();
 
-    vector<Clause> cnf_clauses = parser.get_cnf_clauses();
+    clauses = set<Clause>(cnf_clauses.begin(), cnf_clauses.end());
+    kb_entails_query = check();
+}
 
-    set<Clause> clauses(cnf_clauses.begin(), cnf_clauses.end());
 
-    set<Clause> new_clauses;
-
+// Prove a theorem using resolution
+bool Resolution::check()
+{
     while (true)
     {
+        std::set<Clause> new_clauses;
+
         for (auto it1 = clauses.begin(); it1 != clauses.end(); ++it1)
         {
             for (auto it2 = std::next(it1); it2 != clauses.end(); ++it2)
@@ -91,12 +99,6 @@ bool check(const string& KB, const string& query)
     }
 }
 
-
-Resolution::Resolution(std::string& KB, std::string& query) :
-    IE(KB, query)
-{
-    kb_entails_query = check(KB, query);
-}
 
 void Resolution::print_result()
 {

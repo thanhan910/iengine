@@ -9,6 +9,7 @@
 #include "DPLL.h"
 #include "Resolution.h"
 
+#define DEBUG
 
 using namespace std;
 
@@ -79,7 +80,7 @@ int main()
     query = "d";
     test_general(KB, query);
 
-    query = "c";
+    query = "x";
     test_general(KB, query);
 
     query = "c & d";

@@ -75,8 +75,7 @@ bool FC::check(std::string& kb, std::string& query)
     // Iterate until agenda is empty
     while (!agenda.empty())
     {
-        std::string symbol = agenda.front();
-        agenda.pop();
+        std::string symbol = agenda.front(); agenda.pop();
 
         if (inferred[symbol]) continue;
 
@@ -85,7 +84,6 @@ bool FC::check(std::string& kb, std::string& query)
         // If the symbol is the query symbol, return true
         if (symbol == query)
         {
-            sequence.push_back(symbol);
             return true;
         }
 
