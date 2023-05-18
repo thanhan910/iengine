@@ -59,7 +59,7 @@ void Parser::tokenize()
 
         // Check if currently considered string is a variable/symbol
 
-        if (isalpha(input[pos]) || input[pos] == '_')
+        if (isalnum(input[pos]) || input[pos] == '_')
         {
             // Parse a variable
             size_t end = pos + 1;
