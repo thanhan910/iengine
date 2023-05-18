@@ -18,6 +18,8 @@ DPLL::DPLL(std::string& KB_, std::string& query_) :
     
     clauses = parser.get_cnf_clauses();
 
+    clause_is_true = vector<bool>(clauses.size(), false);
+
     set<string> symbols = parser.get_symbols();
 
     Model model;
@@ -36,8 +38,13 @@ bool DPLL::dpll(std::set<std::string> symbols, Model model)
     unordered_map<string, bool> is_pure; // If the symbol already exists in symbol_value but it's value is different, then it is not pure
 
     // Iterate over all clauses
-    for (auto& clause : clauses)
+    for (size_t i = 0; i < clauses.size(); i++)
     {
+        // Skip true clauses
+        if (clause_is_true[i]) continue;
+
+        Clause& clause = clauses[i];
+
         // Track if the clause is true or false or indeterminate
         bool clause_true = false; // If there is a true literal, then the clause is true
         bool clause_false = true; // If all literals are false, then the clause is false
@@ -84,7 +91,13 @@ bool DPLL::dpll(std::set<std::string> symbols, Model model)
             }
         }
 
-        if (!clause_true)
+        if (clause_true)
+        {
+            clause_is_true[i] = true;
+            sequence.emplace_back(clause, "", true);
+        }
+
+        else
         {
             all_clauses_true = false;
 
@@ -168,7 +181,7 @@ void DPLL::print_result()
                 
                 if (symbol == "")
                 {
-                    cout << " = false";
+                    cout << " = " << (value ? "true" : "false");
                 }
                 else
                 {
