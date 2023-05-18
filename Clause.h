@@ -3,7 +3,7 @@
 #include <vector>
 #include <set>
 
-typedef std::set<std::string> Clause;
+using Clause = std::set<std::string> ;
 
 // Convert a tree in CNF form to a vector of clauses
 std::vector<Clause> convert_root_node_to_clauses(Node* cnf_node);

@@ -15,18 +15,18 @@ DPLL::DPLL(std::string& KB_, std::string& query_) :
     string sentence = KB_ + "~(" + query_ + ");";
 
     Parser parser(sentence);
-
-    vector<Clause> clauses = parser.get_cnf_clauses();
+    
+    clauses = parser.get_cnf_clauses();
 
     set<string> symbols = parser.get_symbols();
 
     Model model;
 
-    kb_entails_query = !dpll(clauses, symbols, model);
+    kb_entails_query = !dpll(symbols, model);
 }
 
 // Main DPLL algorithm function
-bool DPLL::dpll(std::vector<Clause> clauses, std::set<std::string> symbols, Model model)
+bool DPLL::dpll(std::set<std::string> symbols, Model model)
 {
     // Simultaneously perform unit propagation, pure literal elimination, and check the pl value of the sentence
     bool all_clauses_true = true; // If there is one false or indeterminate clause, then not all clauses are true
@@ -93,20 +93,19 @@ bool DPLL::dpll(std::vector<Clause> clauses, std::set<std::string> symbols, Mode
                 // Unit literal found
                 symbols.erase(unassigned_symbol);
                 model[unassigned_symbol] = unassigned_value;
-                return dpll(clauses, symbols, model);
+                sequence.emplace_back(clause, unassigned_symbol, unassigned_value);
+                return dpll(symbols, model);
             }
         }
 
         if (clause_false)
         {
+            sequence.emplace_back(clause, "", false);
             return false;
         }
     }
 
-    if (all_clauses_true)
-    {
-        return true;
-    }
+    if (all_clauses_true) return true;
 
     // Find and eliminate (assign values to) pure symbols
     bool pure_symbol_exist = false;
@@ -115,16 +114,14 @@ bool DPLL::dpll(std::vector<Clause> clauses, std::set<std::string> symbols, Mode
         if (symbol.second)
         {
             pure_symbol_exist = true;
-
             symbols.erase(symbol.first);
-
             model[symbol.first] = symbol_value[symbol.first];
-
+            sequence.emplace_back(Clause{}, symbol.first, symbol.second);
         }
     }
     if (pure_symbol_exist)
     {
-        return dpll(clauses, symbols, model);
+        return dpll(symbols, model);
     }
 
     // If all symbols are assigned values, return false
@@ -137,23 +134,54 @@ bool DPLL::dpll(std::vector<Clause> clauses, std::set<std::string> symbols, Mode
     symbols.erase(next_symbol);
 
     model[next_symbol] = true;
-    if (dpll(clauses, symbols, model)) return true;
+    if (dpll(symbols, model)) return true;
 
     model[next_symbol] = false;
-    if (dpll(clauses, symbols, model)) return true;
+    if (dpll(symbols, model)) return true;
 
     return false;
 }
 
 void DPLL::print_result()
 {
-    if (kb_entails_query)
+    cout << (kb_entails_query ? "YES" : "NO");
+    cout << endl;
+    cout << "Sentence in CNF form:\n";
+    for (Clause clause : clauses)
     {
-        cout << "YES";
-    }
-    else
-    {
-        cout << "NO";
+        print_clause(clause, " ", "{ ", " }");
+        cout << "; ";
     }
     cout << endl;
+    if (kb_entails_query)
+    {
+        cout << "Sequence:\n";
+
+        for (auto& entry : sequence)
+        {
+            Clause clause = get<0>(entry);
+            string symbol = get<1>(entry);
+            bool value = get<2>(entry);
+            if (clause.size() > 0)
+            {
+                print_clause(clause, " ", "{ ", " }");
+                
+                if (symbol == "")
+                {
+                    cout << " = false";
+                }
+                else
+                {
+                    cout << " => [ ";
+                    cout << symbol << " = " << (value ? "true" : "false") << " ]";
+                }
+            }
+            else if (symbol != "")
+            {
+                cout << symbol << " = " << (value ? "true" : "false");
+            }
+
+            cout << endl;
+        }
+    }
 }

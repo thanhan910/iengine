@@ -75,7 +75,7 @@ int main()
     test_horn(KB, query);
 
 
-    KB = "(a <=> (c => ~d)) & t & (t => a); c; ~f || g;";
+    KB = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
 
     query = "d";
     test_general(KB, query);
@@ -90,6 +90,25 @@ int main()
     test_general(KB, query);
 
     query = "a";
+    test_general(KB, query);
+
+    KB = "a || ~a; d;";
+
+    query = "d";
+    test_general(KB, query);
+
+    query = "a";
+    test_general(KB, query);
+
+    KB = "a & ~a; d;";
+    query = "a";
+    test_general(KB, query);
+
+    KB = "a & ~a; b;";
+    query = "b";
+    test_general(KB, query);
+
+    query = "x";
     test_general(KB, query);
 
     cout << Model::instanceCreated << " " << Model::instanceDeleted;

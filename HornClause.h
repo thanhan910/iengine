@@ -5,7 +5,7 @@
 #include <set>
 #include "Node.h"
 
-typedef std::pair<std::set<std::string>, std::string> HornClause;
+using HornClause = std::pair<std::set<std::string>, std::string>;
 
 std::vector<HornClause> convert_root_node_to_horn_clauses(Node* root);
 

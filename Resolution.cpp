@@ -141,23 +141,21 @@ void Resolution::print_result()
 {
     cout << (kb_entails_query ? "YES" : "NO");
     cout << endl;
-    cout << endl;
+    cout << "Sentence in CNF form:\n";
     for (Clause clause : original_clauses)
     {
         print_clause(clause, " ", "{ ", " }");
         cout << "; ";
-        
     }
     cout << endl;
-    cout << endl;
+    cout << "All clauses:\n";
     for (Clause clause : clauses)
     {
         print_clause(clause, " ", "{ ", " }");
         cout << "; ";
-
     }
     cout << endl;
-    cout << endl;
+    cout << "New clauses:\n";
     for (Clause clause : new_clauses)
     {
         print_clause(clause, " ", "{ ", " }");
@@ -165,10 +163,9 @@ void Resolution::print_result()
 
     }
     cout << endl;
-    cout << endl;
-
     if (kb_entails_query)
     {
+        cout << "Sequence:\n";
         for (auto& clauses : sequence)
         {
             Clause resolvent = get<0>(clauses);
