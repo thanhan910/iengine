@@ -75,7 +75,7 @@ int main()
     test_horn(KB, query);
 
 
-    KB = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
+    KB = "(a <=> (c => ~d)) & t & (t => a); c; ~f || g;";
 
     query = "d";
     test_general(KB, query);

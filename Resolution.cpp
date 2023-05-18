@@ -29,7 +29,7 @@ bool contains(const SetType& set1, const SetType& set2)
 template <typename T>
 bool contains(const set<T>& set_, const T& element)
 {
-    return set_.count(element) > 0;
+    return set_.find(element) != set_.end();
 }
 
 
@@ -42,7 +42,25 @@ Resolution::Resolution(std::string& KB, std::string& query) :
     vector<Clause> cnf_clauses = Parser(sentence).get_cnf_clauses();
 
     clauses = set<Clause>(cnf_clauses.begin(), cnf_clauses.end());
+    original_clauses = set<Clause>(cnf_clauses.begin(), cnf_clauses.end());
     kb_entails_query = check();
+}
+
+bool is_tautology(Clause clause)
+{
+    set<string> symbols;
+
+    for (auto& lit : clause)
+    {
+        string s = get_symbol(lit);
+        if (symbols.count(s))
+        {
+            return true;
+        }
+        symbols.insert(s);
+    }
+
+    return false;
 }
 
 
@@ -51,13 +69,18 @@ bool Resolution::check()
 {
     while (true)
     {
-        std::set<Clause> new_clauses;
+        bool new_clause_derived = false;
 
+        // For each pair of clauses
         for (auto it1 = clauses.begin(); it1 != clauses.end(); ++it1)
         {
+            Clause c1 = *it1;
+            if (is_tautology(c1)) continue; // skip if is a tautology
+            
             for (auto it2 = std::next(it1); it2 != clauses.end(); ++it2)
             {
-                Clause c1 = *it1, c2 = *it2;
+                Clause c2 = *it2;
+                if (is_tautology(c2)) continue; // skip if is a tautology
 
                 for (const auto& lit : c1)
                 {
@@ -79,17 +102,32 @@ bool Resolution::check()
                                 resolvent.insert(lit1);
                             }
                         }
-                        if (resolvent.empty())
-                        {
-                            return true;
+                        if (!is_tautology(resolvent))
+                        {                            
+                            if (resolvent.empty()) 
+                            {
+                                // Contradiction reached
+                                sequence.emplace_back(resolvent, c1, c2);
+                                return true; 
+                            }
+                            
+                            if (!contains(clauses, resolvent))
+                            {
+                                // Add new resolvent clause only if it is not in clauses
+                                new_clause_derived = true;
+                                sequence.emplace_back(resolvent, c1, c2);
+                                clauses.insert(resolvent);
+                                new_clauses.insert(resolvent);
+                            }
                         }
-                        new_clauses.insert(resolvent);
+                        break;
                     }
                 }
             }
         }
-        if (contains(clauses, new_clauses))
+        if (!new_clause_derived)
         {
+            // If no new clauses derived, then the sentence is satisfiable, i.e.
             return false;
         }
         for (const auto& clause : new_clauses)
@@ -99,18 +137,50 @@ bool Resolution::check()
     }
 }
 
-
 void Resolution::print_result()
 {
+    cout << (kb_entails_query ? "YES" : "NO");
+    cout << endl;
+    cout << endl;
+    for (Clause clause : original_clauses)
+    {
+        print_clause(clause, " ", "{ ", " }");
+        cout << "; ";
+        
+    }
+    cout << endl;
+    cout << endl;
+    for (Clause clause : clauses)
+    {
+        print_clause(clause, " ", "{ ", " }");
+        cout << "; ";
+
+    }
+    cout << endl;
+    cout << endl;
+    for (Clause clause : new_clauses)
+    {
+        print_clause(clause, " ", "{ ", " }");
+        cout << "; ";
+
+    }
+    cout << endl;
+    cout << endl;
+
     if (kb_entails_query)
     {
-        std::cout << "YES";
-    }
+        for (auto& clauses : sequence)
+        {
+            Clause resolvent = get<0>(clauses);
+            Clause c1 = get<1>(clauses);
+            Clause c2 = get<2>(clauses);
 
-    else
-    {
-        std::cout << "NO";
+            print_clause(c1, " ", "{ ", " }");
+            cout << " & ";
+            print_clause(c2, " ", "{ ", " }");
+            cout << " => ";
+            print_clause(resolvent, " ", "{ ", " }");
+            cout << endl;
+        }
     }
-
-    std::cout << '\n';
 }

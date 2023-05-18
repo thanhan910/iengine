@@ -1,5 +1,6 @@
 #include "Clause.h"
 #include "Literal.h"
+#include <iostream>
 
 
 // Convert a clause-type node to a set of strings
@@ -49,6 +50,24 @@ std::vector<Clause> convert_root_node_to_clauses(Node* cnf_node)
 
         return clauses;
     }
+}
+
+void print_clause(Clause& clause, std::string delimiter, std::string left, std::string right)
+{
+    std::cout << left;
+
+    for (auto it = clause.begin(); it != clause.end(); ++it)
+    {
+        std::cout << *it;  // Print the element
+
+        // Print '|' separator if it's not the last element
+        if (std::next(it) != clause.end())
+        {
+            std::cout << delimiter;
+        }
+    }
+
+    std::cout << right;
 }
 
 
