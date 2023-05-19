@@ -5,12 +5,12 @@
 #include <string>
 #include <vector>
 
-class ParseTree
+class AST
 {
 public:
 
     // Constructor will immediately parse the tokens
-    ParseTree(std::vector<Token> tokens_);
+    AST(std::vector<Token> tokens_);
 
     Node* get_root();
 

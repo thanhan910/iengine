@@ -142,7 +142,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="Parser.cpp" />
-    <ClCompile Include="ParseTree.cpp" />
+    <ClCompile Include="AST.cpp" />
     <ClCompile Include="print_node.cpp" />
     <ClCompile Include="Resolution.cpp" />
     <ClCompile Include="TT.cpp" />
@@ -160,7 +160,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="Node.h" />
     <ClInclude Include="Parser.h" />
-    <ClInclude Include="ParseTree.h" />
+    <ClInclude Include="AST.h" />
     <ClInclude Include="print_node.h" />
     <ClInclude Include="Resolution.h" />
     <ClInclude Include="Token.h" />

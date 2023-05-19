@@ -1,23 +1,23 @@
-#include "ParseTree.h"
+#include "AST.h"
 #include <iostream>
 
 
-bool ParseTree::parser_is_in_scope()
+bool AST::parser_is_in_scope()
 {
     return index < tokens.size();
 }
 
-void ParseTree::move_parser_to_next_token()
+void AST::move_parser_to_next_token()
 {
     ++index;
 }
 
-bool ParseTree::current_token_is(TokenType type)
+bool AST::current_token_is(TokenType type)
 {
     return parser_is_in_scope() && tokens[index].type == type;
 }
 
-ParseTree::ParseTree(std::vector<Token> tokens_) :
+AST::AST(std::vector<Token> tokens_) :
     tokens(tokens_),
     index(0)
 {
@@ -52,17 +52,17 @@ ParseTree::ParseTree(std::vector<Token> tokens_) :
     }
 }
 
-Node* ParseTree::get_root()
+Node* AST::get_root()
 {
     return root_node;
 }
 
-Node* ParseTree::parse_expression()
+Node* AST::parse_expression()
 {
     return parse_implication();
 }
 
-Node* ParseTree::parse_implication()
+Node* AST::parse_implication()
 {
     Node* left = parse_biconditional();
 
@@ -94,7 +94,7 @@ Node* ParseTree::parse_implication()
     }
 }
 
-Node* ParseTree::parse_biconditional()
+Node* AST::parse_biconditional()
 {
     Node* left = parse_disjunction();
 
@@ -124,7 +124,7 @@ Node* ParseTree::parse_biconditional()
     }
 }
 
-Node* ParseTree::parse_disjunction()
+Node* AST::parse_disjunction()
 {
     Node* left = parse_conjunction();
 
@@ -153,7 +153,7 @@ Node* ParseTree::parse_disjunction()
     }
 }
 
-Node* ParseTree::parse_conjunction()
+Node* AST::parse_conjunction()
 {
     Node* left = parse_negation();
 
@@ -185,7 +185,7 @@ Node* ParseTree::parse_conjunction()
     }
 }
 
-Node* ParseTree::parse_negation()
+Node* AST::parse_negation()
 {
     if (current_token_is(NOT))
     {
@@ -212,7 +212,7 @@ Node* ParseTree::parse_negation()
     }
 }
 
-Node* ParseTree::parse_atom()
+Node* AST::parse_atom()
 {
     if (current_token_is(LPAREN))
     {

@@ -1,5 +1,5 @@
 #include "Parser.h"
-#include "ParseTree.h"
+#include "AST.h"
 #include "cnf.h"
 #include "Clause.h"
 #include <iostream>
@@ -92,7 +92,7 @@ void Parser::create_tree()
 {
     tree_created = true;
 
-    root = ParseTree(tokens).get_root();
+    root = AST(tokens).get_root();
 }
 
 void Parser::convert_to_cnf()

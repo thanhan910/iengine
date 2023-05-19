@@ -84,7 +84,7 @@
     <ClCompile Include="cnf.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
-    <ClCompile Include="ParseTree.cpp">
+    <ClCompile Include="AST.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
   </ItemGroup>
@@ -137,7 +137,7 @@
     <ClInclude Include="Model.h">
       <Filter>Header Files\methods</Filter>
     </ClInclude>
-    <ClInclude Include="ParseTree.h">
+    <ClInclude Include="AST.h">
       <Filter>Header Files\Parser</Filter>
     </ClInclude>
     <ClInclude Include="cnf.h">
