@@ -197,7 +197,7 @@ Node* AST::parse_negation()
 
         if (child == nullptr)
         {
-            std::cerr << "Expected atom after negation" << std::endl;
+            std::cerr << "Expected expression after negation" << std::endl;
             exit(1);
         }
 
