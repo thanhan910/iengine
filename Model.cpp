@@ -60,7 +60,7 @@ int pl_value(Model& model, Node* node)
 
     case AND: {
 
-        int sequence = 1;
+        int result = 1;
 
         for (Node* child : node->children)
         {
@@ -73,14 +73,14 @@ int pl_value(Model& model, Node* node)
 
             else if (child_result == 2)
             {
-                sequence = 2;
+                result = 2;
             }
         }
 
-        return sequence;
+        return result;
     }
     case OR: {
-        int sequence = 2;
+        int result = 2;
 
         for (Node* child : node->children)
         {
@@ -93,11 +93,11 @@ int pl_value(Model& model, Node* node)
 
             else if (child_result == 0)
             {
-                sequence = 0;
+                result = 0;
             }
         }
-
-        return sequence;
+        
+        return result;
     }
 
     case IMPLIES: {
@@ -105,7 +105,7 @@ int pl_value(Model& model, Node* node)
         int right = pl_value(model, node->children[1]);
 
         if (left == 0 || right == 1) return 1;
-        if (left == 0 && right == 1) return 0;
+        if (left == 1 && right == 0) return 0;
         return 2;
 
     }
