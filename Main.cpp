@@ -50,17 +50,17 @@ void test_parser(string& input, string& query)
 void test_horn(string& KB, string& query)
 {
     cout << KB << endl << query << endl;
-    cout << "TT:\n"; TT(KB, query).print_result();
-    cout << "FC:\n"; FC(KB, query).print_result();
-    cout << "BC:\n"; BC(KB, query).print_result();
+    cout << "FC: "; FC(KB, query).print_result();
+    cout << "BC: "; BC(KB, query).print_result();
+    cout << "TT: "; TT(KB, query).print_result();
 }
 
 void test_general(string& KB, string& query)
 {
     cout << KB << endl << query << endl;
-    cout << "TT:\n"; TT(KB, query).print_result();
-    cout << "RESOLUTION:\n"; Resolution(KB, query).print_result();
-    cout << "DPLL:\n"; DPLL(KB, query).print_result();
+    cout << "TT: "; TT(KB, query).print_result();
+    cout << "RESOLUTION: "; Resolution(KB, query).print_result();
+    cout << "DPLL: "; DPLL(KB, query).print_result();
 }
 
 int main()
@@ -110,6 +110,13 @@ int main()
 
     query = "x";
     test_general(KB, query);
+
+    KB = "p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2; p21=> p13; p13 => p11; c1 => e1; b1&e1 => f1; f1&g1 => h1; p11=>d; p11&p31 => c1; a2; b2; p21;p12&p32 => c2; a3; b3; p332; p321=> p313; p313 => p311; c31 => e1; b13&e31 => f31; f31&g31 => h31; p131=>d; p311&p31 => c13; a23; b23; p321;p1&p3 => c43; a43; b43; p42; p21=> p413; p413 => p11; c1 => e1; b1&e1 => f1; f1&g1 => h1; p11=>d4; p11&p341 => c1; a42; q42; p241;";
+    query = "d4";
+    test_parser(KB, query);
+    cout << "RESOLUTION: "; Resolution(KB, query).print_result();
+    cout << "DPLL: "; DPLL(KB, query).print_result();
+    test_horn(KB, query);
 
     cout << Model::instanceCreated << " " << Model::instanceDeleted;
 

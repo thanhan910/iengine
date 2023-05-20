@@ -52,7 +52,7 @@ bool TT::check_all(std::vector<std::string> symbols, Model model)
             }
         }
 
-        else
+        else // if(pl_kb == 0)
         {
             return true;
         }
