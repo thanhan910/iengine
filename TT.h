@@ -13,6 +13,7 @@ private:
 
 	Node* KB;
 	Node* query;
+	std::vector<Model> models;
 	
 	bool check_all(std::vector<std::string> symbols, Model model);
 

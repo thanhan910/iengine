@@ -40,6 +40,7 @@ bool TT::check_all(std::vector<std::string> symbols, Model model)
 
         if (pl_kb == 1)
         {
+            models.push_back(model);
             if (pl_query == 1)
             {
                 model_count++;
@@ -83,6 +84,10 @@ void TT::print_result()
     else
     {
         std::cout << "NO";
+    }
+    for (auto& model : models)
+    {
+        print_model(model);
     }
 
     std::cout << '\n';

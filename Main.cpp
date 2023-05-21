@@ -67,6 +67,11 @@ int main()
 {
     string KB, query;
 
+    KB = "(a <=> (c => ~d)) & b & (b => a);";
+
+    query = "d";
+    test_general(KB, query);
+
     KB = "p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;";
     query = "d";
     test_horn(KB, query);
