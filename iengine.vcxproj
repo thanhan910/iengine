@@ -136,6 +136,7 @@
     <ClCompile Include="DPLL.cpp" />
     <ClCompile Include="FC.cpp" />
     <ClCompile Include="HornClause.cpp" />
+    <ClCompile Include="IECreator.cpp" />
     <ClCompile Include="KEYWORDS.cpp" />
     <ClCompile Include="Literal.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="FC.h" />
     <ClInclude Include="HornClause.h" />
     <ClInclude Include="IE.h" />
+    <ClInclude Include="IECreator.h" />
     <ClInclude Include="KEYWORDS.h" />
     <ClInclude Include="Literal.h" />
     <ClInclude Include="Model.h" />
@@ -166,6 +168,9 @@
     <ClInclude Include="Token.h" />
     <ClInclude Include="TokenType.h" />
     <ClInclude Include="TT.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -87,6 +87,9 @@
     <ClCompile Include="AST.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
+    <ClCompile Include="IECreator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TokenType.h">
@@ -143,5 +146,11 @@
     <ClInclude Include="cnf.h">
       <Filter>Header Files\Parser</Filter>
     </ClInclude>
+    <ClInclude Include="IECreator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>
