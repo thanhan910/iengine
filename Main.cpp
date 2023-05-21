@@ -1,15 +1,6 @@
-#include <iostream>
-#include <fstream>
-#include <cctype>
-#include <string>
+#include "IECreator.h"
 
-#include "TT.h"
-#include "FC.h"
-#include "BC.h"
-#include "DPLL.h"
-#include "Resolution.h"
-
-#define DEBUG
+//#define DEBUG
 
 using namespace std;
 
@@ -164,7 +155,7 @@ int main(int argc, char* argv[])
         c = toupper(c);
     }
     // Create and run IE
-    if (method == "TT")
+    /*if (method == "TT")
     {
         TT(KB, query).print_result();
     }
@@ -201,7 +192,11 @@ int main(int argc, char* argv[])
         // If method is not available, exit
         std::cerr << "<method> when in uppercase should be TT, FC, BC, DPLL, RESOLUTION, HORN, or GENERIC\n";
         return 0;
-    }
+    }*/
+    IECreator myFactory;
+    IE* mySearch = myFactory.GetIEType(method, KB, query);
+    mySearch->print_result();
+
     return 0;
 }
 #endif // DEBUG
