@@ -180,13 +180,13 @@ Node* CNF::cnf_conjunction(Node* node)
     node->children = flattened;
 
 
-    for (auto& child : node->children)
+    /*for (auto& child : node->children)
     {
         if (child->type == AND)
         {
             return cnf_conjunction(node);
         }
-    }
+    }*/
 
     // std::cout << "Flatten conjunctions\n";
     // print_node_parentheses_style(root);
@@ -231,13 +231,13 @@ Node* CNF::cnf_disjunction(Node* node)
 
         Node* cnf_node = new Node(AND, "AND");
 
+        // A || (X1 & X2 & X3) = (A || X1) & (A || X2) & (A || X3)
+
         for (auto& child : conjunction_node->children)
         {
             Node* disj_node = new Node(OR, "OR", flattened);
 
             disj_node->children.push_back(child);
-
-            disj_node = cnf(disj_node);
 
             cnf_node->children.push_back(disj_node);
         }
@@ -246,15 +246,16 @@ Node* CNF::cnf_disjunction(Node* node)
         // std::cout << "Distribute disjunctions over conjunctions\n";
         // print_node_parentheses_style(root);
         // std::cout << '\n';
-        for (auto& child : cnf_node->children)
+
+        /*for (auto& child : cnf_node->children)
         {
             if (child->type == AND)
             {
                 return cnf_conjunction(cnf_node);
             }
-        }
+        }*/
 
-        return cnf_node;
+        return cnf(cnf_node);
     }
 
     else
@@ -263,13 +264,13 @@ Node* CNF::cnf_disjunction(Node* node)
         // std::cout << "Flatten disjunctions\n";
         // print_node_parentheses_style(root);
         // std::cout << "\n";
-        for (auto& child : node->children)
+        /*for (auto& child : node->children)
         {
             if (child->type == OR)
             {
                 return cnf_disjunction(node);
             }
-        }
+        }*/
         return node;
     }
 }
