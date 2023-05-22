@@ -13,12 +13,12 @@ private:
 
 	Node* KB;
 	Node* query;
-	std::vector<Model> models;
-	
+	std::vector<Model> models; // save the models just for printint to the console
+	size_t model_count;
+
 	bool check_all(std::vector<std::string> symbols, Model model);
 
 public:
-	size_t model_count;
 
 	TT(std::string& kb_, std::string& query_);
 

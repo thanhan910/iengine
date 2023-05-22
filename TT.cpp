@@ -33,45 +33,44 @@ TT::TT(std::string& kb_, std::string& query_) :
 // Backtrack: Recursively construct the model then check the logic value of kb and query
 bool TT::check_all(std::vector<std::string> symbols, Model model)
 {
-    if (symbols.empty())
+    int pl_kb = pl_value(model, KB);
+
+    if (pl_kb == 1)
     {
-        int pl_kb = pl_value(model, KB);
+        models.push_back(model);
+
         int pl_query = pl_value(model, query);
 
-        if (pl_kb == 1)
+        if (pl_query == 1)
         {
-            models.push_back(model);
-            if (pl_query == 1)
-            {
-                model_count++;
-                return true;
-            }
-
-            else
-            {
-                return false;
-            }
-        }
-
-        else // if(pl_kb == 0)
-        {
+            model_count += (size_t)pow(2, symbols.size());
             return true;
         }
+
+        else if (pl_query == 0)
+        {
+            return false;
+        }
     }
 
-    else
+    else if(pl_kb == 0)
     {
-        std::string p = symbols.back();
-        symbols.pop_back();
-
-        model[p] = true;
-        if (!check_all(symbols, model)) return false;
-
-        model[p] = false;
-        if (!check_all(symbols, model)) return false;
-
         return true;
     }
+
+    // else, if pl_kb == 2 or (pl_query == 2 and pl_kb == 1)
+    // then that means there are still symbols to assign
+
+    std::string p = symbols.back();
+    symbols.pop_back();
+
+    model[p] = true;
+    if (!check_all(symbols, model)) return false;
+
+    model[p] = false;
+    if (!check_all(symbols, model)) return false;
+
+    return true;
 }
 
 void TT::print_result()
@@ -95,7 +94,7 @@ void TT::print_result()
 
         else
         {
-            print_model(models[i], false, false);
+            print_model(models[i], false, true);
         }
         std::cout << '\n';
     }*/

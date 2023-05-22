@@ -118,6 +118,7 @@ void Resolution::print_result()
             cout << "; ";
         }
         cout << endl;
+
         cout << "All clauses:\n";
         for (Clause clause : clauses)
         {
@@ -133,22 +134,20 @@ void Resolution::print_result()
 
         }
         cout << endl;
-        if (kb_entails_query)
+        
+        cout << "Resolution sequence:\n";
+        for (auto& clauses : sequence)
         {
-            cout << "Resolution sequence:\n";
-            for (auto& clauses : sequence)
-            {
-                Clause resolvent = get<0>(clauses);
-                Clause c1 = get<1>(clauses);
-                Clause c2 = get<2>(clauses);
+            Clause resolvent = get<0>(clauses);
+            Clause c1 = get<1>(clauses);
+            Clause c2 = get<2>(clauses);
 
-                print_clause(c1, " ", "{ ", " }");
-                cout << " & ";
-                print_clause(c2, " ", "{ ", " }");
-                cout << " => ";
-                print_clause(resolvent, " ", "{ ", " }");
-                cout << endl;
-            }
+            print_clause(c1, " ", "{ ", " }");
+            cout << " & ";
+            print_clause(c2, " ", "{ ", " }");
+            cout << " => ";
+            print_clause(resolvent, " ", "{ ", " }");
+            cout << endl;
         }
     }
 

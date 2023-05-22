@@ -168,36 +168,34 @@ void DPLL::print_result()
             cout << "; ";
         }
         cout << endl;
-        if (kb_entails_query)
+
+        cout << "DPLL sequence:\n";
+
+        for (auto& entry : sequence)
         {
-            cout << "DPLL sequence:\n";
-
-            for (auto& entry : sequence)
+            Clause clause = get<0>(entry);
+            string symbol = get<1>(entry);
+            bool value = get<2>(entry);
+            if (clause.size() > 0)
             {
-                Clause clause = get<0>(entry);
-                string symbol = get<1>(entry);
-                bool value = get<2>(entry);
-                if (clause.size() > 0)
-                {
-                    print_clause(clause, " ", "{ ", " }");
+                print_clause(clause, " ", "{ ", " }");
 
-                    if (symbol == "")
-                    {
-                        cout << " = " << (value ? "true" : "false");
-                    }
-                    else
-                    {
-                        cout << " => [ ";
-                        cout << symbol << " = " << (value ? "true" : "false") << " ]";
-                    }
-                }
-                else if (symbol != "")
+                if (symbol == "")
                 {
-                    cout << symbol << " = " << (value ? "true" : "false");
+                    cout << " = " << (value ? "true" : "false");
                 }
-
-                cout << endl;
+                else
+                {
+                    cout << " => [ ";
+                    cout << symbol << " = " << (value ? "true" : "false") << " ]";
+                }
             }
+            else if (symbol != "")
+            {
+                cout << symbol << " = " << (value ? "true" : "false");
+            }
+
+            cout << endl;
         }
     }
 
