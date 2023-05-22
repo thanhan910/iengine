@@ -29,12 +29,12 @@ private:
 
     // Define recursive descent functions to parse the tokens 
     Node* parse_expression();
-    Node* parse_implication();
     Node* parse_biconditional();
+    Node* parse_implication();
     Node* parse_disjunction();
     Node* parse_conjunction();
     Node* parse_negation();
-    Node* parse_atom();
+    Node* parse_parentheses_or_symbol();
 };
 
 

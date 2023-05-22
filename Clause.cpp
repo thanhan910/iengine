@@ -2,6 +2,23 @@
 #include "Literal.h"
 #include <iostream>
 
+bool is_tautology(Clause clause)
+{
+    std::set<std::string> symbols;
+
+    for (auto& lit : clause)
+    {
+        std::string s = get_symbol(lit);
+        if (symbols.count(s)) // Since Clause is a set, a symbol can only appear at most twice in the Clause set
+        {
+            return true;
+        }
+        symbols.insert(s);
+    }
+
+    return false;
+}
+
 
 // Convert a clause-type node to a set of strings
 Clause convert_clause_node_to_set(Node* clause_node)
@@ -36,7 +53,15 @@ std::vector<Clause> convert_root_node_to_clauses(Node* cnf_node)
 
     else if (cnf_node->type == OR)
     {
-        return { convert_clause_node_to_set(cnf_node) };
+        Clause clause = convert_clause_node_to_set(cnf_node);
+        if (is_tautology(clause))
+        {
+            return { { } };
+        }
+        else
+        {
+            return { clause };
+        }
     }
 
     else
@@ -45,7 +70,12 @@ std::vector<Clause> convert_root_node_to_clauses(Node* cnf_node)
 
         for (auto& clause_node : cnf_node->children)
         {
-            clauses.push_back(convert_clause_node_to_set(clause_node));
+            Clause clause = convert_clause_node_to_set(clause_node);
+
+            if (!is_tautology(clause))
+            {
+                clauses.push_back(convert_clause_node_to_set(clause_node));
+            }
         }
 
         return clauses;

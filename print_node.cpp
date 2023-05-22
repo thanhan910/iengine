@@ -27,7 +27,7 @@ void print_node_parentheses_style(Node* node)
 
     for (int i = 0; i < node->children.size(); i++)
     {
-        if (i == 0 && node->children.size() > 1)
+        if (i == 0 && (node->children.size() > 1 || node->type != NOT || node->type != SYMBOL))
         {
             std::cout << "( ";
         }
@@ -38,7 +38,7 @@ void print_node_parentheses_style(Node* node)
         {
             std::cout << ", ";
         }
-        else if (node->children.size() > 1)
+        else if (node->children.size() > 1 || node->type != NOT || node->type != SYMBOL)
         {
             std::cout << " )";
         }

@@ -132,7 +132,7 @@
   <ItemGroup>
     <ClCompile Include="BC.cpp" />
     <ClCompile Include="Clause.cpp" />
-    <ClCompile Include="cnf.cpp" />
+    <ClCompile Include="CNF.cpp" />
     <ClCompile Include="DPLL.cpp" />
     <ClCompile Include="FC.cpp" />
     <ClCompile Include="HornClause.cpp" />
@@ -151,7 +151,7 @@
   <ItemGroup>
     <ClInclude Include="BC.h" />
     <ClInclude Include="Clause.h" />
-    <ClInclude Include="cnf.h" />
+    <ClInclude Include="CNF.h" />
     <ClInclude Include="DPLL.h" />
     <ClInclude Include="FC.h" />
     <ClInclude Include="HornClause.h" />

@@ -1,6 +1,6 @@
 #include "IECreator.h"
 
-//#define DEBUG
+#define DEBUG
 
 using namespace std;
 
@@ -30,11 +30,13 @@ void test_parser(string& input, string& query)
     cout << "KB:\n\n";
     Parser parser(input);
     print_node_bracket_style(parser.get_tree());
+    print_node_bracket_style(parser.get_cnf_tree());
     cout << endl;
 
     cout << "QUERY:\n\n";
     Parser parser_q(query);
     print_node_bracket_style(parser_q.get_tree());
+    print_node_bracket_style(parser.get_cnf_tree());
     cout << endl;
 }
 
@@ -58,9 +60,13 @@ int main()
 {
     string KB, query;
 
-    KB = "(a <=> (c => ~d)) & b & (b => a);";
-
+    KB = "(((a & b) & (a1 & b1)) & (a2 & b2) & (a12 & b12)) & (((a3 & b3) & (a13 & b13)) & (a23 & b23) & (a123 & b123));";
     query = "d";
+    test_general(KB, query);
+
+    KB = "a <=> (b <=> (c => ~d));";
+    query = "d";
+    test_parser(KB, query);
     test_general(KB, query);
 
     KB = "p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;";

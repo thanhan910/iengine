@@ -1,13 +1,38 @@
 #include "Model.h"
 #include <iostream>
+#include <map>
 
 // DEBUG: Function to print the model
-void print_model(std::unordered_map<std::string, bool>& model)
+void print_model(std::unordered_map<std::string, bool>& model, bool vertical, bool header)
 {
-    std::cout << "Model\n";
-    for (auto& entry : model)
+    std::map<std::string, bool> sortedMap(model.begin(), model.end());
+
+    if (vertical)
     {
-        std::cout << entry.first << " " << entry.second << std::endl;
+        for (auto& entry : sortedMap)
+        {
+            std::cout << entry.first << " " << entry.second << std::endl;
+        }
+    }
+
+    else
+    {
+        if (header)
+        {
+            for (auto& entry : sortedMap)
+            {
+                std::cout << entry.first << " ";
+            }
+
+            std::cout << std::endl;
+        }
+
+        for (auto& entry : sortedMap)
+        {
+            std::cout << entry.second << " ";
+        }
+
+        std::cout << std::endl;
     }
 }
 

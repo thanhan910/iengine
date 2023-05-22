@@ -157,44 +157,52 @@ bool DPLL::dpll(std::set<std::string> symbols, Model model)
 
 void DPLL::print_result()
 {
-    cout << (kb_entails_query ? "YES" : "NO");
-    cout << endl;
-    cout << "Sentence in CNF form:\n";
-    for (Clause clause : clauses)
-    {
-        print_clause(clause, " ", "{ ", " }");
-        cout << "; ";
-    }
-    cout << endl;
     if (kb_entails_query)
     {
-        cout << "Sequence:\n";
+        cout << "YES\n";
 
-        for (auto& entry : sequence)
+        cout << "KB & ~query in CNF form:\n";
+        for (Clause clause : clauses)
         {
-            Clause clause = get<0>(entry);
-            string symbol = get<1>(entry);
-            bool value = get<2>(entry);
-            if (clause.size() > 0)
-            {
-                print_clause(clause, " ", "{ ", " }");
-                
-                if (symbol == "")
-                {
-                    cout << " = " << (value ? "true" : "false");
-                }
-                else
-                {
-                    cout << " => [ ";
-                    cout << symbol << " = " << (value ? "true" : "false") << " ]";
-                }
-            }
-            else if (symbol != "")
-            {
-                cout << symbol << " = " << (value ? "true" : "false");
-            }
-
-            cout << endl;
+            print_clause(clause, " ", "{ ", " }");
+            cout << "; ";
         }
+        cout << endl;
+        if (kb_entails_query)
+        {
+            cout << "DPLL sequence:\n";
+
+            for (auto& entry : sequence)
+            {
+                Clause clause = get<0>(entry);
+                string symbol = get<1>(entry);
+                bool value = get<2>(entry);
+                if (clause.size() > 0)
+                {
+                    print_clause(clause, " ", "{ ", " }");
+
+                    if (symbol == "")
+                    {
+                        cout << " = " << (value ? "true" : "false");
+                    }
+                    else
+                    {
+                        cout << " => [ ";
+                        cout << symbol << " = " << (value ? "true" : "false") << " ]";
+                    }
+                }
+                else if (symbol != "")
+                {
+                    cout << symbol << " = " << (value ? "true" : "false");
+                }
+
+                cout << endl;
+            }
+        }
+    }
+
+    else
+    {
+        cout << "NO\n";
     }
 }

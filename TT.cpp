@@ -78,17 +78,25 @@ void TT::print_result()
 {
     if (kb_entails_query)
     {
-        std::cout << "YES: " << model_count;
+        std::cout << "YES: " << model_count << '\n';
     }
 
     else
     {
-        std::cout << "NO";
-    }
-    for (auto& model : models)
-    {
-        print_model(model);
+        std::cout << "NO\n";
     }
 
-    std::cout << '\n';
+    /*for (size_t i=0; i< models.size(); i++)
+    {
+        if (i == 0)
+        {
+            print_model(models[i], false, true);
+        }
+
+        else
+        {
+            print_model(models[i], false, false);
+        }
+        std::cout << '\n';
+    }*/
 }

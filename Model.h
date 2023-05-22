@@ -6,11 +6,6 @@
 
 class Model : public std::unordered_map<std::string, bool>
 {
-private:
-	// The underlying unordered_map
-
-
-
 public:
 	// Static member variable to keep track of the instance count
 	static size_t instanceCreated;
@@ -36,7 +31,7 @@ public:
 };
 
 
-void print_model(std::unordered_map<std::string, bool>& model);
+void print_model(std::unordered_map<std::string, bool>& model, bool vertical = false, bool header = false);
 
 
 int pl_value(Model& model, Node* node);

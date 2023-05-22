@@ -1,29 +1,17 @@
 #include "Resolution.h"
+#include "Parser.h"
+#include "Literal.h"
+
 #include <iostream>
 #include <vector>
 #include <set>
 #include <unordered_set>
 #include <utility>
-#include "Parser.h"
-#include "Literal.h"
+
 
 
 using namespace std;
 
-
-// Set helper: Check if a set contains a set
-template <typename SetType>
-bool contains(const SetType& set1, const SetType& set2)
-{
-    for (const auto& elem : set2)
-    {
-        if (set1.find(elem) == set1.end())
-        {
-            return false;
-        }
-    }
-    return true;
-}
 
 // Set helper: Check if a set contains an element
 template <typename T>
@@ -46,25 +34,9 @@ Resolution::Resolution(std::string& KB, std::string& query) :
     kb_entails_query = check();
 }
 
-bool is_tautology(Clause clause)
-{
-    set<string> symbols;
-
-    for (auto& lit : clause)
-    {
-        string s = get_symbol(lit);
-        if (symbols.count(s))
-        {
-            return true;
-        }
-        symbols.insert(s);
-    }
-
-    return false;
-}
 
 
-// Prove a theorem using resolution
+// Prove a theorem using resolution: Check if KB & ~query is unsatisfiable or not
 bool Resolution::check()
 {
     while (true)
@@ -108,7 +80,7 @@ bool Resolution::check()
                             {
                                 // Contradiction reached
                                 sequence.emplace_back(resolvent, c1, c2);
-                                return true; 
+                                return true; //unsatisfiable
                             }
                             
                             if (!contains(clauses, resolvent))
@@ -130,54 +102,58 @@ bool Resolution::check()
             // If no new clauses derived, then the sentence is satisfiable, i.e.
             return false;
         }
-        for (const auto& clause : new_clauses)
-        {
-            clauses.insert(clause);
-        }
     }
 }
 
 void Resolution::print_result()
 {
-    cout << (kb_entails_query ? "YES" : "NO");
-    cout << endl;
-    cout << "Sentence in CNF form:\n";
-    for (Clause clause : original_clauses)
-    {
-        print_clause(clause, " ", "{ ", " }");
-        cout << "; ";
-    }
-    cout << endl;
-    cout << "All clauses:\n";
-    for (Clause clause : clauses)
-    {
-        print_clause(clause, " ", "{ ", " }");
-        cout << "; ";
-    }
-    cout << endl;
-    cout << "New clauses:\n";
-    for (Clause clause : new_clauses)
-    {
-        print_clause(clause, " ", "{ ", " }");
-        cout << "; ";
-
-    }
-    cout << endl;
     if (kb_entails_query)
     {
-        cout << "Sequence:\n";
-        for (auto& clauses : sequence)
-        {
-            Clause resolvent = get<0>(clauses);
-            Clause c1 = get<1>(clauses);
-            Clause c2 = get<2>(clauses);
+        cout << "YES\n";
 
-            print_clause(c1, " ", "{ ", " }");
-            cout << " & ";
-            print_clause(c2, " ", "{ ", " }");
-            cout << " => ";
-            print_clause(resolvent, " ", "{ ", " }");
-            cout << endl;
+        cout << "KB & ~query in CNF form:\n";
+        for (Clause clause : original_clauses)
+        {
+            print_clause(clause, " ", "{ ", " }");
+            cout << "; ";
         }
+        cout << endl;
+        cout << "All clauses:\n";
+        for (Clause clause : clauses)
+        {
+            print_clause(clause, " ", "{ ", " }");
+            cout << "; ";
+        }
+        cout << endl;
+        cout << "New clauses:\n";
+        for (Clause clause : new_clauses)
+        {
+            print_clause(clause, " ", "{ ", " }");
+            cout << "; ";
+
+        }
+        cout << endl;
+        if (kb_entails_query)
+        {
+            cout << "Resolution sequence:\n";
+            for (auto& clauses : sequence)
+            {
+                Clause resolvent = get<0>(clauses);
+                Clause c1 = get<1>(clauses);
+                Clause c2 = get<2>(clauses);
+
+                print_clause(c1, " ", "{ ", " }");
+                cout << " & ";
+                print_clause(c2, " ", "{ ", " }");
+                cout << " => ";
+                print_clause(resolvent, " ", "{ ", " }");
+                cout << endl;
+            }
+        }
+    }
+
+    else
+    {
+        cout << "NO\n";
     }
 }

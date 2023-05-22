@@ -3,7 +3,10 @@
 #include <vector>
 #include <set>
 
-using Clause = std::set<std::string> ;
+using Clause = std::set<std::string>;
+
+// Check if a clause is a tautology
+bool is_tautology(Clause clause);
 
 // Convert a tree in CNF form to a vector of clauses
 std::vector<Clause> convert_root_node_to_clauses(Node* cnf_node);

@@ -81,7 +81,7 @@
     <ClCompile Include="Clause.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
-    <ClCompile Include="cnf.cpp">
+    <ClCompile Include="CNF.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
     <ClCompile Include="AST.cpp">
@@ -143,7 +143,7 @@
     <ClInclude Include="AST.h">
       <Filter>Header Files\Parser</Filter>
     </ClInclude>
-    <ClInclude Include="cnf.h">
+    <ClInclude Include="CNF.h">
       <Filter>Header Files\Parser</Filter>
     </ClInclude>
     <ClInclude Include="IECreator.h">

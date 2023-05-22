@@ -1,6 +1,6 @@
 #include "Parser.h"
 #include "AST.h"
-#include "cnf.h"
+#include "CNF.h"
 #include "Clause.h"
 #include <iostream>
 
@@ -99,7 +99,7 @@ void Parser::convert_to_cnf()
 {
     converted_to_cnf = true;
 
-    root = cnf(root);
+    root = CNF(root).get_root();
 }
 
 std::set<std::string> Parser::get_symbols()

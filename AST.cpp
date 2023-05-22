@@ -59,12 +59,42 @@ Node* AST::get_root()
 
 Node* AST::parse_expression()
 {
-    return parse_implication();
+    return parse_biconditional();
+}
+
+Node* AST::parse_biconditional()
+{
+    Node* left = parse_implication();
+
+    std::vector<Node*> nodes = { left };
+
+    while (current_token_is(BICONDITIONAL))
+    {
+        move_parser_to_next_token();
+
+        Node* right = parse_implication();
+
+        if (right == nullptr)
+        {
+            std::cerr << "Expected right-hand side of biconditional" << std::endl;
+            exit(1);
+        }
+
+        nodes.push_back(right);
+    }
+    if (nodes.size() > 1)
+    {
+        return new Node{ BICONDITIONAL, "BICONDITIONAL", nodes };
+    }
+    else
+    {
+        return left;
+    }
 }
 
 Node* AST::parse_implication()
 {
-    Node* left = parse_biconditional();
+    Node* left = parse_disjunction();
 
     std::vector<Node*> nodes = { left };
 
@@ -72,7 +102,7 @@ Node* AST::parse_implication()
     {
         move_parser_to_next_token();
 
-        Node* right = parse_biconditional();
+        Node* right = parse_disjunction();
 
         if (right == nullptr)
         {
@@ -88,36 +118,6 @@ Node* AST::parse_implication()
         return new Node{ IMPLIES, "IMPLIES", nodes };
     }
 
-    else
-    {
-        return left;
-    }
-}
-
-Node* AST::parse_biconditional()
-{
-    Node* left = parse_disjunction();
-
-    std::vector<Node*> nodes = { left };
-
-    while (current_token_is(BICONDITIONAL))
-    {
-        move_parser_to_next_token();
-
-        Node* right = parse_disjunction();
-
-        if (right == nullptr)
-        {
-            std::cerr << "Expected right-hand side of biconditional" << std::endl;
-            exit(1);
-        }
-
-        nodes.push_back(right);
-    }
-    if (nodes.size() > 1)
-    {
-        return new Node{ BICONDITIONAL, "BICONDITIONAL", nodes };
-    }
     else
     {
         return left;
@@ -193,7 +193,7 @@ Node* AST::parse_negation()
 
         move_parser_to_next_token();
 
-        Node* child = parse_atom();
+        Node* child = parse_parentheses_or_symbol();
 
         if (child == nullptr)
         {
@@ -208,11 +208,11 @@ Node* AST::parse_negation()
 
     else
     {
-        return parse_atom();
+        return parse_parentheses_or_symbol();
     }
 }
 
-Node* AST::parse_atom()
+Node* AST::parse_parentheses_or_symbol()
 {
     if (current_token_is(LPAREN))
     {
