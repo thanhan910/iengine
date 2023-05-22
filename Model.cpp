@@ -29,10 +29,13 @@ void print_model(std::unordered_map<std::string, bool>& model, bool vertical, bo
 
         for (auto& entry : sortedMap)
         {
-            std::cout << entry.second << " ";
-        }
+            std::cout << entry.second;
 
-        std::cout << std::endl;
+            for (size_t i = 0;i < entry.first.size(); i++)
+            {
+                std::cout << " ";
+            }
+        }
     }
 }
 
@@ -105,7 +108,7 @@ int pl_value(Model& model, Node* node)
         return result;
     }
     case OR: {
-        int result = 2;
+        int result = 0;
 
         for (Node* child : node->children)
         {
@@ -116,9 +119,9 @@ int pl_value(Model& model, Node* node)
                 return 1;
             }
 
-            else if (child_result == 0)
+            else if (child_result == 2)
             {
-                result = 0;
+                result = 2;
             }
         }
         
