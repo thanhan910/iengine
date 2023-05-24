@@ -15,7 +15,9 @@ BC::BC(std::string& KB_, std::string& query_) :
 {
     Parser parser(KB_);
 
-    KB = parser.get_horn_clauses();
+    clauses = parser.get_horn_clauses();
+
+    is_checking = std::vector<bool>(clauses.size(), false);
 
     kb_entails_query = ask(query_);
 }
@@ -29,15 +31,19 @@ bool BC::ask(const std::string& query)
     }
 
     // Try to prove the query using backward chaining
-    for (const auto& clause : KB)
+    for (size_t i=0; i < clauses.size(); i++)
     {
+        
         // Check if the consequent of the Horn clause matches the query
-        if (clause.second == query)
+        // and if the clause is not being checked already to avoid infinite loop
+        if (clauses[i].second == query && !is_checking[i])
         {
+            is_checking[i] = true;
+
             bool result = true;
 
             // Try to prove each antecedent recursively
-            for (const auto& antecedent : clause.first)
+            for (const auto& antecedent : clauses[i].first)
             {
                 result &= ask(antecedent);
             }

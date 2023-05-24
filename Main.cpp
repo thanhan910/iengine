@@ -60,6 +60,11 @@ int main()
 {
     string KB, query;
 
+    KB = "a & b => a;";
+    query = "a";
+    test_horn(KB, query);
+    test_general(KB, query);
+
     KB = "(((a & b) & (a1 & b1)) & (a2 & b2) & (a12 & b12)) & (((a3 & b3) & (a13 & b13)) & (a23 & b23) & (a123 & b123));";
     query = "d";
     test_general(KB, query);

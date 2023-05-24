@@ -15,7 +15,8 @@ public:
 private:
 	std::vector<std::string> sequence;
 
-	std::vector<HornClause> KB;
+	std::vector<bool> is_checking;
+	std::vector<HornClause> clauses;
 	std::unordered_map<std::string, bool> facts;
 	bool ask(const std::string& query);
 };
