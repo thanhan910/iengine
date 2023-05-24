@@ -30,9 +30,9 @@ public:
 	}
 };
 
-
+// DEBUG: Function to print the model
 void print_model(std::unordered_map<std::string, bool>& model, bool vertical = false, bool header = false);
 
-
+// Check the logical value of the node with the given model.
 int pl_value(Model& model, Node* node);
 

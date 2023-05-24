@@ -42,7 +42,7 @@ void print_model(std::unordered_map<std::string, bool>& model, bool vertical, bo
 size_t Model::instanceCreated = 0;
 size_t Model::instanceDeleted = 0;
 
-
+// Check the logical value of the node with the given model.
 int pl_value(Model& model, Node* node)
 {
     if (node == nullptr)

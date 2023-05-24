@@ -1,6 +1,6 @@
 #include "IECreator.h"
 
-#define DEBUG
+//#define DEBUG
 
 using namespace std;
 
@@ -85,6 +85,9 @@ int main()
     test_general(KB, query);
 
     query = "x";
+    test_general(KB, query);
+
+    query = "~d & (~g => ~f)";
     test_general(KB, query);
 
     query = "c & d";
