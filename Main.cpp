@@ -1,6 +1,6 @@
 #include "IECreator.h"
 
-//#define DEBUG
+#define DEBUG
 
 using namespace std;
 
@@ -40,30 +40,169 @@ void test_parser(string& input, string& query)
     cout << endl;
 }
 
-void test_horn(string& KB, string& query)
+void test_horn(string& KB, string& query, bool quick_test = true)
 {
-    cout << KB << endl << query << endl;
-    cout << "FC: "; FC(KB, query).print_result();
-    cout << "BC: "; BC(KB, query).print_result();
-    cout << "TT: "; TT(KB, query).print_result();
+    cout << "KB: " << KB << "\nquery: " << query << endl;
+
+    TT ie_tt = TT(KB, query);
+    FC ie_fc = FC(KB, query);
+    BC ie_bc = BC(KB, query);
+    
+    if (quick_test)
+    {
+        bool result_tt = ie_tt.get_result();
+        bool result_fc = ie_fc.get_result();
+        bool result_bc = ie_bc.get_result();
+
+        if (result_tt == result_fc && result_tt == result_bc)
+        {
+            cout << "All got the same results.\n";
+        }
+        else
+        {
+            cout << "Not all got the same results.\n";
+        }
+
+        cout << "TT: " << result_tt <<
+            " FC: " << result_fc <<
+            " BC: " << result_bc << "\n";
+    }
+    else
+    {
+        cout << "TT: "; ie_tt.print_result();
+        cout << "FC: "; ie_fc.print_result();
+        cout << "BC: "; ie_bc.print_result();
+    }
 }
 
-void test_general(string& KB, string& query)
+void test_horn_general(string& KB, string& query, bool quick_test = true)
 {
-    cout << KB << endl << query << endl;
-    cout << "TT: "; TT(KB, query).print_result();
-    cout << "RESOLUTION: "; Resolution(KB, query).print_result();
-    cout << "DPLL: "; DPLL(KB, query).print_result();
+    cout << "KB: " << KB << "\nquery: " << query << endl;
+
+    TT ie_tt = TT(KB, query);
+    FC ie_fc = FC(KB, query);
+    BC ie_bc = BC(KB, query);
+    Resolution ie_resolution = Resolution(KB, query);
+    DPLL ie_dpll = DPLL(KB, query);
+
+    if (quick_test)
+    {
+        bool result_tt = ie_tt.get_result();
+        bool result_fc = ie_fc.get_result();
+        bool result_bc = ie_bc.get_result();
+        bool result_resolution = ie_resolution.get_result();
+        bool result_dpll = ie_tt.get_result();
+
+        if (result_tt == result_fc && result_tt == result_bc && result_tt == result_resolution && result_tt == result_dpll)
+        {
+            cout << "All got the same results.\n";
+        }
+        else
+        {
+            cout << "Not all got the same results.\n";
+        }
+
+        cout << "TT: " << result_tt <<
+            " FC: " << result_fc <<
+            " BC: " << result_bc <<
+            " RESOLUTION: " << result_resolution <<
+            " DPLL: " << result_dpll << "\n";
+    }
+    else
+    {
+        cout << "TT: "; ie_tt.print_result();
+        cout << "FC: "; ie_fc.print_result();
+        cout << "BC: "; ie_bc.print_result();
+        cout << "RESOLUTION: "; ie_resolution.print_result();
+        cout << "DPLL: "; ie_dpll.print_result();
+    }
+}
+
+void test_all_except_tt(string& KB, string& query, bool quick_test = true)
+{
+    cout << "KB: " << KB << "\nquery: " << query << endl;
+    FC ie_fc = FC(KB, query);
+    BC ie_bc = BC(KB, query);
+    Resolution ie_resolution = Resolution(KB, query);
+    DPLL ie_dpll = DPLL(KB, query);
+
+    if (quick_test)
+    {
+        bool result_fc = ie_fc.get_result();
+        bool result_bc = ie_bc.get_result();
+        bool result_resolution = ie_resolution.get_result();
+        bool result_dpll = ie_dpll.get_result();
+
+        if (result_fc == result_bc && result_fc == result_resolution && result_fc == result_dpll)
+        {
+            cout << "All got the same results.\n";
+        }
+        else
+        {
+            cout << "Not all got the same results.\n";
+        }
+
+        cout << "FC: " << result_fc <<
+            " BC: " << result_bc <<
+            " RESOLUTION: " << result_resolution <<
+            " DPLL: " << result_dpll << "\n";
+    }
+    else
+    {
+        cout << "FC: "; ie_fc.print_result();
+        cout << "BC: "; ie_bc.print_result();
+        cout << "RESOLUTION: "; ie_resolution.print_result();
+        cout << "DPLL: "; ie_dpll.print_result();
+    }
+}
+
+
+void test_general(string& KB, string& query, bool quick_test = true)
+{
+    cout << "KB: " << KB << "\nquery: " << query << endl;
+    
+    TT ie_tt = TT(KB, query);
+    Resolution ie_resolution = Resolution(KB, query);
+    DPLL ie_dpll = DPLL(KB, query);
+    
+    if (quick_test)
+    {
+        bool result_tt = ie_tt.get_result();
+        bool result_resolution = ie_resolution.get_result();
+        bool result_dpll = ie_tt.get_result();
+
+        if (result_tt == result_resolution && result_tt == result_dpll)
+        {
+            cout << "All got the same results.\n";
+        }
+        else
+        {
+            cout << "Not all got the same results.\n";
+        }
+
+        cout << "TT: " << result_tt << 
+            " RESOLUTION: " << result_resolution << 
+            " DPLL: " << result_dpll << "\n";
+    }
+    else
+    {
+        cout << "TT: "; ie_tt.print_result();
+        cout << "RESOLUTION: "; ie_resolution.print_result();
+        cout << "DPLL: "; ie_dpll.print_result();
+    }
 }
 
 int main()
 {
     string KB, query;
 
+    KB = "a=>b; b=>c; c&d=>a; d; c; b;";
+    query = "a";
+    test_horn_general(KB, query);
+
     KB = "a & b => a;";
     query = "a";
-    test_horn(KB, query);
-    test_general(KB, query);
+    test_horn_general(KB, query);
 
     KB = "(((a & b) & (a1 & b1)) & (a2 & b2) & (a12 & b12)) & (((a3 & b3) & (a13 & b13)) & (a23 & b23) & (a123 & b123));";
     query = "d";
@@ -76,16 +215,13 @@ int main()
 
     KB = "p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2;";
     query = "d";
-    test_horn(KB, query);
-    test_general(KB, query);
+    test_horn_general(KB, query);
 
     query = "a";
-    test_horn(KB, query);
-    test_general(KB, query);
+    test_horn_general(KB, query);
 
 
     KB = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
-
     query = "d";
     test_general(KB, query);
 
@@ -126,9 +262,7 @@ int main()
     KB = "p2=> p3; p3 => p1; c => e; b&e => f; f&g => h; p1=>d; p1&p3 => c; a; b; p2; p21=> p13; p13 => p11; c1 => e1; b1&e1 => f1; f1&g1 => h1; p11=>d; p11&p31 => c1; a2; b2; p21;p12&p32 => c2; a3; b3; p332; p321=> p313; p313 => p311; c31 => e1; b13&e31 => f31; f31&g31 => h31; p131=>d; p311&p31 => c13; a23; b23; p321;p1&p3 => c43; a43; b43; p42; p21=> p413; p413 => p11; c1 => e1; b1&e1 => f1; f1&g1 => h1; p11=>d4; p11&p341 => c1; a42; q42; p241;";
     query = "d4";
     test_parser(KB, query);
-    cout << "RESOLUTION: "; Resolution(KB, query).print_result();
-    cout << "DPLL: "; DPLL(KB, query).print_result();
-    test_horn(KB, query);
+    test_all_except_tt(KB, query);
 
     cout << Model::instanceCreated << " " << Model::instanceDeleted;
 

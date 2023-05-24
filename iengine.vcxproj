@@ -136,6 +136,7 @@
     <ClCompile Include="DPLL.cpp" />
     <ClCompile Include="FC.cpp" />
     <ClCompile Include="HornClause.cpp" />
+    <ClCompile Include="IE.cpp" />
     <ClCompile Include="IECreator.cpp" />
     <ClCompile Include="KEYWORDS.cpp" />
     <ClCompile Include="Literal.cpp" />

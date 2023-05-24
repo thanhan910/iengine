@@ -90,6 +90,9 @@
     <ClCompile Include="IECreator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="IE.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="TokenType.h">
