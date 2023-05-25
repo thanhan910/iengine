@@ -2,6 +2,9 @@
 #include "print_node.h"
 #include <iostream>
 
+//#define CNF_DEBUG
+
+
 CNF::CNF(Node* node) :
     root(node)
 {
@@ -15,9 +18,13 @@ Node* CNF::get_root()
 
 Node* CNF::cnf(Node* node)
 {
-    // std::cout << "Current root node\n";
-    // print_node_parentheses_style(node);
-    // std::cout << '\n';
+#ifdef CNF_DEBUG
+
+    std::cout << "Current root node\n";
+    print_node_parentheses_style(node);
+    std::cout << '\n';
+#endif // CNF_DEBUG
+
 
     if (node == nullptr)
     {
@@ -52,9 +59,12 @@ Node* CNF::cnf(Node* node)
 
     default: {
         // Do nothing
+#ifdef CNF_DEBUG
         //// std::cout << "Do nothing\n";
         //// print_node_parentheses_style(node);
         //// std::cout << '\n';
+#endif // CNF_DEBUG
+
         return node;
     }
     }
@@ -63,9 +73,15 @@ Node* CNF::cnf(Node* node)
 Node* CNF::cnf_implication(Node* node)
 {
     // Convert A => B to ~A | B
-    // std::cout << "Curent node\n";
-    // print_node_parentheses_style(root);
-    // std::cout << '\n';
+
+#ifdef CNF_DEBUG
+    
+    std::cout << "Curent node\n";
+    print_node_parentheses_style(root);
+    std::cout << '\n';
+
+#endif // CNF_DEBUG
+
     Node* left = new Node{ NOT, { node->children[0] } };
     Node* right = node->children[1];
     Node* disj_node = new Node{ OR, "OR", { left, right } };
@@ -78,9 +94,13 @@ Node* CNF::cnf_implication(Node* node)
 Node* CNF::cnf_biconditional(Node* node)
 {
     // Convert A <=> B to (A | ~B) & (~A | B)
-    // std::cout << "Curent node\n";
-    // print_node_parentheses_style(root);
-    // std::cout << '\n';
+    
+#ifdef CNF_DEBUG
+    /*std::cout << "Curent node\n";
+    print_node_parentheses_style(node);
+    std::cout << '\n';*/
+#endif // CNF_DEBUG
+    
     Node* left = node->children[0];
     Node* right = node->children[1];
     Node* not_left = new Node{ NOT, { left } };
@@ -88,24 +108,37 @@ Node* CNF::cnf_biconditional(Node* node)
     Node* disj_node1 = new Node{ OR, "OR", { left, not_right } };
     Node* disj_node2 = new Node{ OR, "OR", { not_left, right } };
     Node* cnf_node = new Node{ AND, "AND", { disj_node1, disj_node2 } };
-    // std::cout << "A <=> B to (A | ~B) & (~A | B)\n";
-    // print_node_parentheses_style(root);
-    // std::cout << '\n';
+    
+#ifdef CNF_DEBUG
+
+    /*std::cout << "A <=> B to (A | ~B) & (~A | B)\n";
+    print_node_parentheses_style(cnf_node);
+    std::cout << '\n';*/
+    
+#endif // CNF_DEBUG
+
     return cnf(cnf_node);
 }
 
 Node* CNF::cnf_negation(Node* node)
 {
-    // std::cout << "Current node\n";
-    // print_node_parentheses_style(node);
-    // std::cout << '\n';
+#ifdef CNF_DEBUG
+    
+    std::cout << "Current node\n";
+    print_node_parentheses_style(node);
+    std::cout << '\n';
+
+#endif // CNF_DEBUG
+    
     Node* child = node->children[0];
     if (child->type == SYMBOL)
     {
         // Do nothing
+#ifdef CNF_DEBUG
         //// std::cout << "Do nothing\n";
         //// print_node_parentheses_style(node);
         //// std::cout << '\n';
+#endif
         return node;
     }
     else if (child->type == NOT)
@@ -113,9 +146,13 @@ Node* CNF::cnf_negation(Node* node)
         // Double negation
         Node* cnf_node = child->children[0];
         delete node;
-        // std::cout << "Double negation\n";
-        // print_node_parentheses_style(root);
-        // std::cout << '\n';
+
+#ifdef CNF_DEBUG
+        std::cout << "Double negation\n";
+        print_node_parentheses_style(cnf_node);
+        std::cout << '\n';
+#endif
+      
         return cnf(cnf_node);
     }
     else if (child->type == AND)
@@ -128,9 +165,14 @@ Node* CNF::cnf_negation(Node* node)
             cnf_node->children.push_back(not_node);
         }
         delete node;
-        // std::cout << "De Morgan's law: ~(A & B) = ~A | ~B\n";
-        // print_node_parentheses_style(root);
-        // std::cout << '\n';
+
+#ifdef CNF_DEBUG
+        std::cout << "De Morgan's law: ~(A & B) = ~A | ~B\n";
+        print_node_parentheses_style(cnf_node);
+        std::cout << '\n';
+
+#endif // CNF_DEBUG
+
         return cnf(cnf_node);
     }
     else if (child->type == OR)
@@ -143,9 +185,14 @@ Node* CNF::cnf_negation(Node* node)
             cnf_node->children.push_back(not_node);
         }
         delete node;
-        // std::cout << "De Morgan's law: ~(A | B) = ~A & ~B\n";
-        // print_node_parentheses_style(root);
-        // std::cout << '\n';
+
+#ifdef CNF_DEBUG
+        std::cout << "De Morgan's law: ~(A & B) = ~A | ~B\n";
+        print_node_parentheses_style(cnf_node);
+        std::cout << '\n';
+
+#endif // CNF_DEBUG
+        
         return cnf(cnf_node);
     }
     else
@@ -159,12 +206,7 @@ Node* CNF::cnf_conjunction(Node* node)
 {
     // Flatten conjunctions: (A & B) & C = A & B & C
     std::vector<Node*> flattened;
-    //if (node == root)
-    //{
-    //    std::cout << "Flatten conjunctions: (A & B) & C = A & B & C\n";
-    //    print_node_bracket_style(node);
-    //    std::cout << "\n";
-    //}
+
     for (auto& child : node->children)
     {
         if (child->type == AND)
@@ -188,9 +230,14 @@ Node* CNF::cnf_conjunction(Node* node)
         }
     }*/
 
-    // std::cout << "Flatten conjunctions\n";
-    // print_node_parentheses_style(root);
-    // std::cout << '\n';
+#ifdef CNF_DEBUG
+
+    std::cout << "Flatten conjunctions\n";
+    print_node_parentheses_style(node);
+    std::cout << '\n';
+
+#endif // CNF_DEBUG
+    
     return node;
 }
 
@@ -224,11 +271,14 @@ Node* CNF::cnf_disjunction(Node* node)
     if (conjunction_node != nullptr)
     {
         // Distribute disjunctions over conjunctions
-        
-        // std::cout << "Distributing disjunctions over conjunctions\n";
-        // print_node_parentheses_style(root);
-        // std::cout << '\n';
 
+#ifdef CNF_DEBUG
+        std::cout << "Start distributing disjunctions over conjunctions\n";
+        print_node_parentheses_style(node);
+        std::cout << '\n';
+#endif // CNF_DEBUG
+
+        
         Node* cnf_node = new Node(AND, "AND");
 
         // A || (X1 & X2 & X3) = (A || X1) & (A || X2) & (A || X3)
@@ -243,10 +293,16 @@ Node* CNF::cnf_disjunction(Node* node)
         }
 
         delete node;
-        // std::cout << "Distribute disjunctions over conjunctions\n";
-        // print_node_parentheses_style(root);
-        // std::cout << '\n';
 
+#ifdef CNF_DEBUG
+
+        std::cout << "Distribute disjunctions over conjunctions\n";
+        print_node_parentheses_style(cnf_node);
+        std::cout << '\n';
+
+#endif // CNF_DEBUG
+
+        
         /*for (auto& child : cnf_node->children)
         {
             if (child->type == AND)
@@ -261,9 +317,15 @@ Node* CNF::cnf_disjunction(Node* node)
     else
     {
         node->children = flattened;
-        // std::cout << "Flatten disjunctions\n";
-        // print_node_parentheses_style(root);
-        // std::cout << "\n";
+        
+#ifdef CNF_DEBUG
+
+        std::cout << "Flatten disjunctions\n";
+        print_node_parentheses_style(node);
+        std::cout << "\n";
+        
+#endif // CNF_DEBUG
+        
         /*for (auto& child : node->children)
         {
             if (child->type == OR)

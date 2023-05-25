@@ -198,6 +198,42 @@ int main()
 {
     string KB, query;
 
+    /*KB = "a <=> (b <=> (c <=> ~d)); a; c <=> ~d; b";
+    query = "(a & b) <=> (c || d)";
+    test_parser(KB, query);
+    
+    KB = "a <=> (b <=> (c <=> ~d)); a; c <=> ~d; b";
+    query = "(a <=> b) <=> ((a & b) <=> (a || b))";
+    test_general(KB, query, false);
+    
+    KB = "a <=> (b <=> (c <=> ~d)); a; c <=> ~d; b";
+    query = "a <=> (a<=>b)";
+    test_general(KB, query, false);
+
+    KB = "a <=> (b <=> (c <=> ~d)); a; c <=> ~d; b";
+    query = "(a <=> b) <=> a";
+    test_general(KB, query, false);
+
+    KB = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
+    query = "(a <=> b) <=> a";
+    test_general(KB, query, false);*/
+
+    /*KB = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
+    query = "a <=> (a<=>b)";
+    test_general(KB, query, false);*/
+    
+    /*KB = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
+    query = "(g || ~b) => ((d => a) => (d => a))";
+    test_general(KB, query, false);*/
+    
+    KB = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
+    query = "(g & ~b) => ((d => a) => (d => a))";
+    test_general(KB, query, false);
+
+    KB = "p => q; l& m => p; a& b& l => m; a& p => l; a& b => l; a; b;";
+    query = "q";
+    test_horn_general(KB, query, false);
+    
     KB = "a=>b; b=>c; c&d=>a; d; c; b;";
     query = "a";
     test_horn_general(KB, query);
