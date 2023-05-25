@@ -38,7 +38,7 @@ void test_parser(string& input, string& query)
     cout << "QUERY:\n\n";
     Parser parser_q(query);
     print_node_bracket_style(parser_q.get_tree());
-    print_node_bracket_style(parser.get_cnf_tree());
+    print_node_bracket_style(parser_q.get_cnf_tree());
     cout << endl;
 }
 
@@ -201,6 +201,11 @@ int main()
     KB = "a=>b; b=>c; c&d=>a; d; c; b;";
     query = "a";
     test_horn_general(KB, query);
+    
+    KB = "~A; (B => C) => A & B; C; C & D; A <=> D";
+    query = "D";
+    test_parser(KB, query);
+    test_general(KB, query, false);
 
     KB = "a & b => a;";
     query = "a";
