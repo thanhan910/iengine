@@ -23,7 +23,7 @@ bool is_tautology(Clause clause)
 // Convert a clause-type node to a set of strings
 Clause convert_clause_node_to_set(Node* clause_node)
 {
-    if (clause_node->type == NOT || clause_node->type == SYMBOL)
+    if (is_literal(clause_node))
     {
         return { convert_literal_node_to_string(clause_node) };
     }

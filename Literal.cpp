@@ -33,6 +33,12 @@ std::string get_symbol(const std::string& literal)
     }
 }
 
+// Check if a Node is a literal
+bool is_literal(Node* node)
+{
+    return node->type == SYMBOL || (node->type == NOT && node->children.size() == 1 && node->children[0]->type == SYMBOL);
+}
+
 // Convert literal-type node to string
 std::string convert_literal_node_to_string(Node* literal_node)
 {

@@ -1,4 +1,5 @@
 #include "print_node.h"
+#include "Literal.h"
 #include <iostream>
 
 void print_node_tree_style(Node* node, std::string prefix, std::string child_prefix)
@@ -27,7 +28,7 @@ void print_node_parentheses_style(Node* node)
 
     for (int i = 0; i < node->children.size(); i++)
     {
-        if (i == 0 && (node->children.size() > 1 || node->type != NOT || node->type != SYMBOL))
+        if (i == 0 && (node->children.size() > 1 || !is_literal(node)))
         {
             std::cout << "( ";
         }
@@ -38,7 +39,7 @@ void print_node_parentheses_style(Node* node)
         {
             std::cout << ", ";
         }
-        else if (node->children.size() > 1 || node->type != NOT || node->type != SYMBOL)
+        else if (node->children.size() > 1 || !is_literal(node))
         {
             std::cout << " )";
         }

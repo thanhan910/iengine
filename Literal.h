@@ -12,6 +12,9 @@ std::string reverse(const std::string& literal);
 // Function to get symbol from literal
 std::string get_symbol(const std::string& literal);
 
+// Check if a Node is a literal
+bool is_literal(Node* node);
+
 // Convert literal-type node to string
 std::string convert_literal_node_to_string(Node* literal_node);
 
