@@ -153,6 +153,7 @@
     <ClInclude Include="BC.h" />
     <ClInclude Include="Clause.h" />
     <ClInclude Include="CNF.h" />
+    <ClInclude Include="Distributor.h" />
     <ClInclude Include="DPLL.h" />
     <ClInclude Include="FC.h" />
     <ClInclude Include="HornClause.h" />

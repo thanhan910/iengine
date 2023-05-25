@@ -1,8 +1,10 @@
 #include "CNF.h"
 #include "print_node.h"
+#include "Distributor.h"
 #include <iostream>
 
 //#define CNF_DEBUG
+#define NEW_DISJUNCTION
 
 
 CNF::CNF(Node* node) :
@@ -29,6 +31,16 @@ Node* CNF::cnf(Node* node)
     if (node == nullptr)
     {
         return nullptr;
+    }
+
+    if (node->type == IMPLIES)
+    {
+        return cnf_implication(node);
+    }
+
+    else if (node->type == BICONDITIONAL)
+    {
+        return cnf_biconditional(node);
     }
 
     // Recursively convert children to CNF form
@@ -221,15 +233,6 @@ Node* CNF::cnf_conjunction(Node* node)
     }
     node->children = flattened;
 
-
-    /*for (auto& child : node->children)
-    {
-        if (child->type == AND)
-        {
-            return cnf_conjunction(node);
-        }
-    }*/
-
 #ifdef CNF_DEBUG
 
     std::cout << "Flatten conjunctions\n";
@@ -240,6 +243,98 @@ Node* CNF::cnf_conjunction(Node* node)
     
     return node;
 }
+
+
+
+#ifdef NEW_DISJUNCTION
+
+Node* CNF::cnf_disjunction(Node* node)
+{
+    if (node->children.size() == 1)
+    {
+        return cnf(node->children[0]);
+    }
+    // Flatten disjunctions
+
+    std::vector<Node*> others;
+
+    std::vector<std::vector<Node*>> conjunctions_list;
+
+    for (auto& child : node->children)
+    {
+        if (child->type == OR)
+        {
+            others.insert(others.end(), child->children.begin(), child->children.end());
+            delete child;
+        }
+        else if (child->type == AND)
+        {
+            conjunctions_list.push_back(child->children);
+            delete child;
+        }
+        else
+        {
+            others.push_back(child);
+        }
+    }
+
+
+
+    if (conjunctions_list.size() > 0)
+    {
+        // Distribute disjunctions over conjunctions
+        // A || (X1 & X2 & X3) = (A || X1) & (A || X2) & (A || X3)
+
+#ifdef CNF_DEBUG
+        std::cout << "Start distributing disjunctions over conjunctions\n";
+        //print_node_parentheses_style(node);
+        std::cout << '\n';
+#endif // CNF_DEBUG
+
+
+        Node* cnf_node = new Node(AND, "AND");
+
+        std::vector<std::vector<Node*>> disjunctions_list = Distributor<Node*>(conjunctions_list).get_result();
+
+        for (auto& disjunction : disjunctions_list)
+        {
+            disjunction.insert(disjunction.end(), others.begin(), others.end());
+
+            Node* disj_node = new Node(OR, "OR", disjunction);
+
+            cnf_node->children.push_back(disj_node);
+        }
+
+        delete node;
+
+#ifdef CNF_DEBUG
+
+        std::cout << "Distribute disjunctions over conjunctions\n";
+        print_node_parentheses_style(cnf_node);
+        std::cout << '\n';
+
+#endif // CNF_DEBUG
+
+        return cnf(cnf_node);
+    }
+
+    else
+    {
+        node->children = others;
+
+#ifdef CNF_DEBUG
+
+        std::cout << "Flatten disjunctions\n";
+        print_node_parentheses_style(node);
+        std::cout << "\n";
+
+#endif // CNF_DEBUG
+
+        return node;
+    }
+}
+
+#else
 
 Node* CNF::cnf_disjunction(Node* node)
 {
@@ -336,3 +431,5 @@ Node* CNF::cnf_disjunction(Node* node)
     }
 }
 
+
+#endif // NEW_DISJUNCTION
