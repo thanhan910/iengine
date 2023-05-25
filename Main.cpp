@@ -11,6 +11,7 @@ using namespace std;
 #include "Parser.h"
 #include "print_node.h"
 
+#ifdef NODE_DEBUG
 // Define a function that prints out the number of Node instances created throughout the program, just to check whether there are redundant Node instances that should have been deleted or not.
 void print_nodes_creations()
 {
@@ -18,6 +19,7 @@ void print_nodes_creations()
     std::cout << "Nodes deleted: " << Node::instance_deleted << std::endl;
     std::cout << "Nodes remaining: " << Node::instance_created - Node::instance_deleted << std::endl;
 }
+#endif
 
 void test_parser(string& input, string& query)
 {
@@ -263,8 +265,16 @@ int main()
     query = "d4";
     test_parser(KB, query);
     test_all_except_tt(KB, query);
+    
+    KB = "p2=>p3; p3 => p1; p4 => p5; p6&p5 => p7; p7&p8 => p9; p1=>p10; p1&p3 => p4; p11; p6; p2; p14=> p13; p13 => p11; p12 => p13; p14&p13 => p15; p15&p16 => p17; p11=>p10; p11&p18 => p12; p18; p2; p19;p12&p20 =>p2; p23; p22; p21; p24=> p25; p26 => p27; p28 => p29; p30&p31 => p32; p33&p34 => p31; p35=>p10; p36&p31 => p13; p23; p37; p38;p1p3 =>p40; p39; p43; p42; p21=> p41; p44 => p11; p12 => p13; p14&p13 => p15; p15&p16 => p17; p11=>p4; p11&p45 => p12; p46;p47; p48;";
+    query = "p4";
+    test_parser(KB, query);
+    test_all_except_tt(KB, query, false);
 
+#ifdef MODEL_DEBUG
     cout << Model::instanceCreated << " " << Model::instanceDeleted;
+#endif // MODEL_DEBUG
+
 
     return 0;
 }

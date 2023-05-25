@@ -10,8 +10,12 @@ struct Node
     std::string value;
     std::vector<Node*> children;
 
+//#define NODE_DEBUG
+#ifdef NODE_DEBUG
     static size_t instance_created;
     static size_t instance_deleted;
+#endif // NODE_DEBUG
+
 
     Node(TokenType type_, std::string value_, std::vector<Node*> children_ = std::vector<Node*>());
 

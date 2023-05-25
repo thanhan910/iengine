@@ -4,6 +4,12 @@
 #include <string>
 #include <unordered_map>
 
+//#define MODEL_DEBUG
+#ifndef MODEL_DEBUG
+
+using Model = std::unordered_map<std::string, bool>;
+
+#else
 class Model : public std::unordered_map<std::string, bool>
 {
 public:
@@ -29,6 +35,7 @@ public:
 		++instanceDeleted;
 	}
 };
+#endif // MODEL_DEBUG
 
 // DEBUG: Function to print the model
 void print_model(std::unordered_map<std::string, bool>& model, bool vertical = false, bool header = false);

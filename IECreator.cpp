@@ -12,7 +12,9 @@ IE* IECreator::GetIEType(std::string IEType, std::string aKB, std::string aQuery
 		return new DPLL(aKB, aQuery);
 	if (IEType == "RESOLUTION")
 		return new Resolution(aKB, aQuery);
-
-	std::cerr << "<method> when in uppercase should be TT, FC, BC, DPLL, RESOLUTION\n";
-
+	else
+	{
+		std::cerr << "<method> when in uppercase should be TT, FC, BC, DPLL, RESOLUTION\n";
+		exit(1);
+	}
 }
