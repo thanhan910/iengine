@@ -271,6 +271,7 @@ Node* CNF::cnf_disjunction(Node* node)
     if (conjunction_node != nullptr)
     {
         // Distribute disjunctions over conjunctions
+        // A || (X1 & X2 & X3) = (A || X1) & (A || X2) & (A || X3)
 
 #ifdef CNF_DEBUG
         std::cout << "Start distributing disjunctions over conjunctions\n";
@@ -280,8 +281,6 @@ Node* CNF::cnf_disjunction(Node* node)
 
         
         Node* cnf_node = new Node(AND, "AND");
-
-        // A || (X1 & X2 & X3) = (A || X1) & (A || X2) & (A || X3)
 
         for (auto& child : conjunction_node->children)
         {
