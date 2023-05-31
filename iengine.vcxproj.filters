@@ -87,11 +87,11 @@
     <ClCompile Include="AST.cpp">
       <Filter>Source Files\Parser</Filter>
     </ClCompile>
-    <ClCompile Include="IECreator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="IE.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\methods</Filter>
+    </ClCompile>
+    <ClCompile Include="IECreator.cpp">
+      <Filter>Source Files\methods</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -149,11 +149,11 @@
     <ClInclude Include="CNF.h">
       <Filter>Header Files\Parser</Filter>
     </ClInclude>
-    <ClInclude Include="IECreator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Distributor.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IECreator.h">
+      <Filter>Header Files\methods</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

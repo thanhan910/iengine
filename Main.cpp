@@ -11,6 +11,7 @@ using namespace std;
 #include "IE.h"
 #include "Parser.h"
 #include "print_node.h"
+#include "CNF.h"
 
 #ifdef NODE_DEBUG
 // Define a function that prints out the number of Node instances created throughout the program, just to check whether there are redundant Node instances that should have been deleted or not.
@@ -30,16 +31,16 @@ void test_parser(string& input, string& query)
     cout << query << endl;
     cout << endl;
 
-    //cout << "KB:\n\n";
-    //Parser parser(input);
-    //print_node_bracket_style(parser.get_tree());
-    //print_node_bracket_style(parser.get_cnf_tree());
-    //cout << endl;
+    cout << "KB:\n\n";
+    Parser parser(input);
+    print_node_bracket_style(parser.get_tree());
+    print_node_infix(parser.get_cnf_tree());
+    cout << endl;
 
     cout << "QUERY:\n\n";
-    Parser parser_q(query);
-    //print_node_bracket_style(parser_q.get_tree());
-    print_node_bracket_style(parser_q.get_cnf_tree());
+    Parser parser_q(input);
+    print_node_bracket_style(parser_q.get_tree());
+    print_node_infix(parser_q.get_cnf_tree());
     cout << endl;
 
     string sentence = input + "~(" + query + ");";
@@ -47,7 +48,7 @@ void test_parser(string& input, string& query)
     cout << "KB & ~QUERY:\n\n";
     Parser parser_x(sentence);
     print_node_bracket_style(parser_x.get_tree());
-    print_node_bracket_style(parser_x.get_cnf_tree());
+    print_node_infix(parser_x.get_cnf_tree());
     cout << endl;
 }
 
@@ -184,7 +185,7 @@ void test_general(string& KB, string& query, bool quick_test = true)
     
     bool result_tt = ie_tt.get_result();
     bool result_resolution = ie_resolution.get_result();
-    bool result_dpll = ie_tt.get_result();
+    bool result_dpll = ie_dpll.get_result();
 
     if (result_tt == result_resolution && result_tt == result_dpll)
     {
@@ -215,42 +216,41 @@ int main()
 {
     string KB, query;
     
-    /*KB = "a <=> (b <=> (c <=> ~d)); a; c <=> ~d; b;";
-    query = "(a & b) <=> (c || d)";
-    test_parser(KB, query);
-    test_general(KB, query, false);
-    
-    KB = "a <=> (b <=> (c <=> ~d)); a; c <=> ~d; b";
+    KB = "a <=> (b <=> (c <=> ~d)); a; c <=> ~d; b;";
     query = "(a <=> b) <=> ((a & b) <=> (a || b))";
     test_general(KB, query, false);
     
     KB = "a <=> (b <=> (c <=> ~d)); a; c <=> ~d; b";
     query = "a <=> (a<=>b)";
-    test_general(KB, query, false);
+    test_general(KB, query);
 
     KB = "a <=> (b <=> (c <=> ~d)); a; c <=> ~d; b";
     query = "(a <=> b) <=> a";
-    test_general(KB, query, false);
+    test_general(KB, query);
 
     KB = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
     query = "(a <=> b) <=> a";
-    test_general(KB, query, false);
+    test_general(KB, query);
 
     KB = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
     query = "a <=> (a<=>b)";
-    test_general(KB, query, false);
+    test_general(KB, query);
     
     KB = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
     query = "(g || ~b) => ((d => a) => (d => a))";
-    test_general(KB, query, false);*/
+    test_general(KB, query);
+
+    KB = "a <=> (b <=> (c <=> ~d)); a; c <=> ~d; b;";
+    query = "(a & b) <=> (c || d)";
+    test_general(KB, query);
     
-    /*KB = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
+    KB = "(a <=> (c => ~d)) & b & (b => a); c; ~f || g;";
     query = "(g & ~b) => ((d => a) => (d => a))";
     test_general(KB, query);
 
     KB = "a <=> (b <=> (c <=> ~d)); a; c <=> ~d; b";
     query = "(a & b) <=> (c || d)";
-    test_general(KB, query);*/
+    test_general(KB, query);
 
     KB = "p => q; l& m => p; a& b& l => m; a& p => l; a& b => l; a; b;";
     query = "q";
