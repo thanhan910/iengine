@@ -98,3 +98,27 @@ void print_node_bracket_style(Node* node, std::string prefix)
 
     std::cout << prefix << "}\n";
 }
+
+void print_node_infix(Node* node)
+{
+    if (node == nullptr) return;
+
+    if (is_literal(node))
+    {
+        std::cout << convert_literal_node_to_string(node);
+        return;
+    }
+
+    std::cout << "( ";
+
+    for (int i = 0; i < node->children.size(); i++)
+    {
+        if (i > 0)
+        {
+            std::cout << " " << node->value << " ";
+        }
+        print_node_infix(node->children[i]);
+    }
+
+    std::cout << " )";
+}
